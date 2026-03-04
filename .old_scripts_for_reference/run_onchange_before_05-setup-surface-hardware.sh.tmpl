@@ -1,0 +1,91 @@
+#!/bin/bash
+# Surface-Specific Hardware Initialization
+set -euo pipefail
+
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+echo "💻 Starting Surface Hardware Setup..."
+
+# --- 1. Kernel 6.15.3 Pinning Logic ---
+UNAME_VER="6.15.3-arch1-1-surface" 
+FILE_VER="6.15.3.arch1-1"
+RELEASE_TAG="arch-6.15.3-1"
+BASE_URL="https://github.com/linux-surface/linux-surface/releases/download/$RELEASE_TAG"
+
+if [[ "$(uname -r)" != *"$UNAME_VER"* ]]; then
+    echo "📥 Downloading Kernel $FILE_VER from GitHub..."
+    KERNEL_DIR=$(mktemp -d)
+    cd "$KERNEL_DIR"
+    curl -fLO "$BASE_URL/linux-surface-$FILE_VER-x86_64.pkg.tar.zst"
+    curl -fLO "$BASE_URL/linux-surface-headers-$FILE_VER-x86_64.pkg.tar.zst"
+    
+    echo "📦 Installing Kernel..."
+    sudo pacman -U --noconfirm *.pkg.tar.zst
+    cd ~ && rm -rf "$KERNEL_DIR"
+else
+    echo "✅ Correct Kernel ($UNAME_VER) already active. Skipping download."
+fi
+
+# --- 2. Lock kernel in pacman.conf ---
+# Note: Since the metapackages are removed, this prevents accidental re-installs
+echo "🔒 Ensuring linux-surface is locked in /etc/pacman.conf..."
+if ! grep -q "^IgnorePkg = linux-surface linux-surface-headers" /etc/pacman.conf; then
+    sudo sed -i '/^IgnorePkg =/d' /etc/pacman.conf
+    sudo sed -i 's/^#\s*IgnorePkg\s*=.*/IgnorePkg = linux-surface linux-surface-headers/' /etc/pacman.conf
+fi
+
+# --- 3. Multitouch Autodev Script ---
+echo "👆 Creating iptsd-autodev helper..."
+sudo mkdir -p /usr/local/bin
+cat <<'EOF' | sudo tee /usr/local/bin/iptsd-autodev > /dev/null
+#!/usr/bin/env bash
+set -euo pipefail
+log(){ echo "iptsd-autodev: $*" >&2; }
+
+for p in /sys/class/hidraw/hidraw*; do
+  f="$p/device/uevent"; [ -f "$f" ] || continue
+  if grep -qi 'HID_ID=.*045e:.*0c46' "$f"; then
+    node="/dev/$(basename "$p")"
+    log "using $node (matched HID_ID in $f)"
+    exec /usr/bin/iptsd "$node"
+  fi
+done
+
+if [ -e /dev/hidraw5 ]; then
+  log "fallback to /dev/hidraw5"
+  exec /usr/bin/iptsd /dev/hidraw5
+fi
+exit 1
+EOF
+sudo chmod +x /usr/local/bin/iptsd-autodev
+
+# --- 4. Custom iptsd Service ---
+echo "⚙️ Configuring custom iptsd service..."
+cat <<EOF | sudo tee /etc/systemd/system/iptsd.service > /dev/null
+[Unit]
+Description=Intel Precise Touch & Stylus Daemon (auto 045e:0c46)
+After=systemd-udevd.service
+Before=display-manager.service
+
+[Service]
+TimeoutStartSec=15
+StandardOutput=journal
+StandardError=journal
+Type=simple
+ExecStartPre=/usr/bin/udevadm settle
+ExecStart=/usr/local/bin/iptsd-autodev
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# --- 5. Activation ---
+sudo systemctl daemon-reload
+sudo systemctl enable --now iptsd.service
+sudo timedatectl set-local-rtc 1 --adjust-system-clock
+
+echo "✅ Surface Hardware Setup Complete."
+{{ else -}}
+echo "⏭️ Not a Surface device. Skipping hardware setup."
+{{ end -}}

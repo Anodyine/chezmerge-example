@@ -1,0 +1,34 @@
+#!/bin/bash
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+set -euo pipefail
+
+echo "🚀 Setting up Surface Repository, Kernel & Support Tools..."
+
+# 1. GPG Key Setup
+if ! pacman-key -list-keys 56C464BAAC421453 >/dev/null 2>&1; then
+    curl -s https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc | sudo pacman-key --add -
+    sudo pacman-key --lsign-key 56C464BAAC421453
+fi
+
+# 2. Repo Setup
+if ! grep -q "\[linux-surface\]" /etc/pacman.conf; then
+    echo -e "\n[linux-surface]\nServer = https://pkg.surfacelinux.com/arch/" | sudo tee -a /etc/pacman.conf
+    # Sync databases immediately so pacman knows where to find the kernel
+    sudo pacman -Sy
+fi
+
+# 3. Install Surface Kernel & Hardware Support
+# - linux-surface: The core kernel with SLS2 patches
+# - surface-dtx-daemon: Handles the SLS2 haptic feedback and clipboard/base state
+# - iptsd: Required for the touchscreen and stylus to function
+echo "📥 Installing linux-surface kernel and specific SLS2 utilities..."
+sudo pacman -S --needed --noconfirm \
+    linux-surface \
+    linux-surface-headers \
+    iptsd \
+
+# 4. Enable Surface-specific services
+echo "⚙️ Enabling Surface services..."
+sudo systemctl enable --now iptsd
+
+{{ end -}}

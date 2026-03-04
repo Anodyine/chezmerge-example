@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Gemini
+Comment=Google Gemini AI Assistant
+Exec=chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --app="https://gemini.google.com"
+Icon=/home/anodyine/.local/share/icons/gemini.png
+Terminal=false
+Type=Application
+Categories=Network;ArtificialIntelligence;
+StartupWMClass=gemini.google.com

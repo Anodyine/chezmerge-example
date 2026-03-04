@@ -1,0 +1,111 @@
+#!/bin/bash
+# Unified Boot & Snapshot Management - Robust & Host-Aware
+set -euo pipefail
+
+HOSTNAME="{{ .chezmoi.hostname }}"
+echo "🚀 Starting Boot/Snapshot Config for $HOSTNAME..."
+
+# --- 1. Helper Detection & Auto-Install (RESTORED FROM OLD) ---
+if command -v paru &> /dev/null; then
+    AUR_HELPER="paru"
+elif command -v yay &> /dev/null; then
+    AUR_HELPER="yay"
+else
+    echo "📦 Installing yay (Dependency for AUR packages)..."
+    sudo pacman -S --needed --noconfirm git base-devel
+    TEMP_DIR=$(mktemp -d)
+    git clone https://aur.archlinux.org/yay-bin.git "$TEMP_DIR/yay-bin"
+    (cd "$TEMP_DIR/yay-bin" && makepkg -si --noconfirm)
+    rm -rf "$TEMP_DIR"
+    AUR_HELPER="yay"
+fi
+
+# --- 2. Install Packages ---
+echo "📥 Installing snapshot and bootloader tools..."
+$AUR_HELPER -S --needed --noconfirm \
+    limine-snapper-sync snap-pac limine-mkinitcpio-hook
+
+# --- 3. Snapper Initialization & Retention (RESTORED FROM OLD) ---
+# This ensures Section 6/7 doesn't fail on a fresh install
+if [ ! -f "/etc/snapper/configs/root" ]; then
+    echo "📁 Snapper config missing. Initializing root config..."
+    if mountpoint -q /.snapshots; then sudo umount /.snapshots; fi
+    if [ -d "/.snapshots" ]; then sudo rm -rf /.snapshots; fi
+    
+    sudo snapper -c root create-config /
+    
+    # Standard cleanup for snapper-on-btrfs subvolumes
+    sudo rm -rf /.snapshots
+    sudo mkdir -p /.snapshots
+    sudo mount -a || true
+fi
+
+echo "⚖️ Setting Snapper retention limits..."
+sudo snapper -c root set-config \
+    TIMELINE_LIMIT_HOURLY="10" \
+    TIMELINE_LIMIT_DAILY="21" \
+    TIMELINE_LIMIT_WEEKLY="4" \
+    TIMELINE_LIMIT_MONTHLY="2" \
+    TIMELINE_LIMIT_YEARLY="0"
+
+# --- 4. Central Configuration (Host-Aware) ---
+DEFAULT_CONF="/etc/default/limine"
+MASTER_CONF="/boot/limine.conf"
+
+sudo touch "$DEFAULT_CONF"
+
+# Standard Global Vars
+sudo sed -i '/^LIMINE_CONFIG=/d' "$DEFAULT_CONF"
+echo "LIMINE_CONFIG=\"$MASTER_CONF\"" | sudo tee -a "$DEFAULT_CONF" > /dev/null
+sudo sed -i '/^ROOT_SNAPSHOTS_PATH=/d' "$DEFAULT_CONF"
+echo "ROOT_SNAPSHOTS_PATH=\"/@snapshots\"" | sudo tee -a "$DEFAULT_CONF" > /dev/null
+
+# --- 5. Dynamic Kernel Parameter Extraction ---
+# We grab everything currently in /proc/cmdline
+CURRENT_CMDLINE=$(cat /proc/cmdline | sed -E 's/(BOOT_IMAGE|initrd|pci|pcie_aspm|intel_iommu|usb4_port_reset)[^ ]* ?//g')
+
+# Clear existing line before re-adding
+sudo sed -i '/^KERNEL_CMDLINE/d' "$DEFAULT_CONF"
+
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+# --- 6. Surface-Specific Configuration ---
+SURFACE_ARGS="pci=hpiosize=0"
+echo "KERNEL_CMDLINE[default]=\"$CURRENT_CMDLINE $SURFACE_ARGS\"" | sudo tee -a "$DEFAULT_CONF" >/dev/null
+
+SURFACE_VARS=(
+    # Move linux-surface to the very beginning.
+    # The "*" captures the standard 'linux' kernel as the next option.
+    "BOOT_ORDER=\"linux-surface, *, *fallback, Snapshots\""
+)
+
+for var in "${SURFACE_VARS[@]}"; do
+    key=$(echo $var | cut -d= -f1)
+    sudo sed -i "/^$key=/d" "$DEFAULT_CONF"
+    echo "$var" | sudo tee -a "$DEFAULT_CONF" > /dev/null
+done
+
+{{ else -}}
+# --- 7. Standard Host Configuration ---
+echo "KERNEL_CMDLINE[default]=\"$CURRENT_CMDLINE\"" | sudo tee -a "$DEFAULT_CONF" >/dev/null
+sudo sed -i "/^TIMEOUT=/d" "$DEFAULT_CONF"
+echo "TIMEOUT=5" | sudo tee -a "$DEFAULT_CONF" > /dev/null
+{{ end -}}
+
+# --- 7. Finalize & Sync ---
+echo "⚙️ Regenerating bootloader and enabling services..."
+if ! grep -q "btrfs-overlayfs" /etc/mkinitcpio.conf; then
+    sudo sed -i "s/filesystems/filesystems btrfs-overlayfs/" /etc/mkinitcpio.conf
+fi
+
+sudo limine-mkinitcpio
+
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+#echo "🔧 Forcing Timeout to 0 to fix freeze when my usb hubs are connected..."
+#sudo sed -i 's/^#\?timeout:.*/timeout: 0/' /boot/limine.conf
+{{ end -}}
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now limine-snapper-sync.service
+sudo limine-snapper-sync
+
+echo "✅ Boot and Snapshot configuration SUCCESSFUL."

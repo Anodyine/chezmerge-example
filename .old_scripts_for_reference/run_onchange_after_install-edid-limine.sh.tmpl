@@ -1,0 +1,56 @@
+#!/bin/bash
+set -euo pipefail
+
+HOSTNAME="{{ .chezmoi.hostname }}"
+FW_DIR="/usr/lib/firmware/edid"
+LIMINE_DEFAULT="/etc/default/limine"
+
+# --- HOST CONFIGURATION ---
+{{ if eq .chezmoi.hostname "ml-server" -}}
+EDID_FILES=(
+    "files/edid/edid-1920-1280-60:edid-1280.bin"
+)
+
+TARGET_PARAMS="nvidia_drm.modeset=1 drm.edid_firmware=HDMI-A-2:edid/edid-1280.bin"
+# hash: {{ include "files/edid/edid-1920-1280-60" | sha256sum }}
+
+{{ else -}}
+echo "Host $HOSTNAME not configured for EDID override."
+exit 0
+{{ end -}}
+
+# --- INSTALL EDID BINARIES ---
+sudo mkdir -p "$FW_DIR"
+
+for entry in "${EDID_FILES[@]}"; do
+    SRC_REL="${entry%%:*}"
+    DEST_NAME="${entry##*:}"
+    FULL_SRC="{{ .chezmoi.sourceDir }}/$SRC_REL"
+    FULL_DEST="$FW_DIR/$DEST_NAME"
+
+    echo "Installing $DEST_NAME for $HOSTNAME..."
+    sudo cp "$FULL_SRC" "$FULL_DEST"
+
+    if ! grep -q "$FULL_DEST" /etc/mkinitcpio.conf; then
+        sudo sed -i "s|FILES=(|FILES=($FULL_DEST |" /etc/mkinitcpio.conf
+    fi
+done
+
+# --- PATCH LIMINE ---
+if [ -f "$LIMINE_DEFAULT" ]; then
+    BASE_ARGS=$(sed 's/BOOT_IMAGE=[^ ]* //g; s/initrd=[^ ]* //g; s/nvidia_drm.modeset=[^ ]* //g; s/drm.edid_firmware=[^ ]* //g' /proc/cmdline)
+    NEW_LINE="KERNEL_CMDLINE[default]=\"$BASE_ARGS $TARGET_PARAMS\""
+
+    if ! grep -qF "$NEW_LINE" "$LIMINE_DEFAULT"; then
+        echo "⚡ Updating Limine configuration"
+        sudo sed -i '/^KERNEL_CMDLINE\[default\]=/d' "$LIMINE_DEFAULT"
+        echo "$NEW_LINE" | sudo tee -a "$LIMINE_DEFAULT" >/dev/null
+
+        if command -v limine-mkinitcpio >/dev/null; then
+            sudo limine-mkinitcpio
+        else
+            sudo mkinitcpio -P
+            sudo limine-update
+        fi
+    fi
+fi

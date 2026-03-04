@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# {{ if eq .chezmoi.hostname "ml-server" }}
+
+# This comment is code! It calculates the hash of the profile. 
+# If test.orp changes, this script re-runs.
+# Hash: {{ include "dot_config/OpenRGB/test.orp" | sha256sum }}
+
+if command -v openrgb >/dev/null 2>&1; then
+    echo "OpenRGB profile detected. Applying 'test' profile..."
+    
+    # Try to apply the profile. 
+    # We use '|| true' so the script doesn't crash chezmoi if OpenRGB fails 
+    # (e.g., if permissions aren't set up yet on a fresh install).
+    /usr/bin/openrgb --profile test >/dev/null 2>&1 || echo "  (OpenRGB command failed - likely waiting on permissions/reboot)"
+fi
+
+# {{ end }}

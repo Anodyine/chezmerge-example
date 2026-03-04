@@ -1,0 +1,21 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- $input := .chezmoi.stdin | trim -}}
+{{- $prefs := dict -}}
+
+{{- if $input -}}
+  {{- $prefs = $input | fromJson -}}
+{{- end -}}
+
+{{- $prefs = setValueAtPath "extensions.theme.id" "" $prefs -}}
+{{- $prefs = setValueAtPath "extensions.theme.system_theme" (int 1) $prefs -}}
+
+{{- $extID := "admpapghdljldnidkknnkoeeddbgjean" -}}
+{{- $extPath := (print "extensions.settings." $extID) -}}
+
+{{- $prefs = setValueAtPath (print $extPath ".state") (int 1) $prefs -}}
+{{- $prefs = setValueAtPath (print $extPath ".location") (int 1) $prefs -}}
+
+{{- /* Set to false to use system title bars/borders */ -}}
+{{- $prefs = setValueAtPath "browser.custom_chrome_frame" false $prefs -}}
+
+{{- $prefs | toPrettyJson -}}

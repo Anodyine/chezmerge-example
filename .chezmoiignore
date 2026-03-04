@@ -1,0 +1,15 @@
+# Configuration & Lists
+archinstall-config.json
+user_configuration.json
+led_color.txt
+packages.flatpak.list
+packages.pacman.list
+packages.yay.list
+packages.uv.list
+vscode-extensions.list
+README.md
+fix-btrfs-layout.sh
+
+# Folders
+tools
+wallpapers

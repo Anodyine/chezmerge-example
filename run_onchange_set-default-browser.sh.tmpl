@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Define the chromium desktop file name (usually chromium.desktop or chromium-browser.desktop)
+BROWSER_DESKTOP="chromium.desktop"
+
+# Set as default web browser
+xdg-settings set default-web-browser "$BROWSER_DESKTOP"
+
+# Set mime types for common web protocols
+xdg-mime default "$BROWSER_DESKTOP" x-scheme-handler/http
+xdg-mime default "$BROWSER_DESKTOP" x-scheme-handler/https
+xdg-mime default "$BROWSER_DESKTOP" text/html
