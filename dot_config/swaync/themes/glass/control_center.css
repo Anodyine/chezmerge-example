@@ -15,6 +15,7 @@
 @define-color bordercolor @primary;
 @define-color fontcolor @on_surface;
 @define-color text @on_surface;
+@define-color waybar_bg #2d3241;
 
 /* === Global Reset === */
 * {
@@ -239,11 +240,12 @@
 /* === Notifications === */
 
 .control-center .notification-row .notification-background .notification.critical {
-  background-color: @surface_container;
+  background-color: @waybar_bg;
+  background: radial-gradient(circle at 50% 250%, alpha(darker(@waybar_bg), 0.9), alpha(@waybar_bg, 0.9));
   border-radius: 10px;
   margin: 5px 0px;
   padding: 10px;
-  border: 2px solid red;
+  border: 1px solid @primary;
   min-height: 2.5em;
 }
 
@@ -298,11 +300,10 @@ trough highlight {
 }
 
 .notification {
-    background-color: @surface;
+    background-color: @waybar_bg;
     border-radius: 12px;
-    background: radial-gradient(circle at 50% 250%, @primary, @surface) padding-box,
-        linear-gradient(#FFFFFF,@on_primary) border-box;
-    border: 1px solid transparent;	
+    background: radial-gradient(circle at 50% 250%, alpha(darker(@waybar_bg), 0.9), alpha(@waybar_bg, 0.9));
+    border: 1px solid @primary;
     opacity:1.0;
     padding:10px;
     margin:10px 0px 0px 0px;

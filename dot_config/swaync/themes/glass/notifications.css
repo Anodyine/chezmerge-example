@@ -13,6 +13,7 @@
 @define-color bordercolor @primary;
 @define-color fontcolor @on_surface;
 @define-color text @on_surface;
+@define-color waybar_bg #2d3241;
 
 
 * {
@@ -30,10 +31,10 @@
 
 
 .floating-notifications.background .notification-row .notification-background .notification {
-    background-color: @surface;
+    background-color: @waybar_bg;
     border-radius: 12px;
-    background: radial-gradient(circle at 55% -80%, alpha(@primary, 1), alpha(black,0.6)) padding-box, linear-gradient(transparent, alpha(white, 0.5)) padding-box;
-    border: 1px solid @on_surface;
+    background: radial-gradient(circle at 50% 250%, alpha(darker(@waybar_bg), 0.9), alpha(@waybar_bg, 0.9));
+    border: 1px solid @primary;
     opacity:1.0;
     margin:10px;
     margin-right:18px;
@@ -41,10 +42,10 @@
 }
 
 .floating-notifications.background .notification-row .notification-background .notification.critical {
-    background-color: @surface;
+    background-color: @waybar_bg;
     border-radius: 12px;
-    background: radial-gradient(circle at 55% -80%, alpha(@primary, 1), alpha(black,0.6)) padding-box, linear-gradient(transparent, alpha(red, 0.5)) padding-box;
-    border: 1px solid @on_surface;
+    background: radial-gradient(circle at 50% 250%, alpha(darker(@waybar_bg), 0.9), alpha(@waybar_bg, 0.9));
+    border: 1px solid @primary;
     opacity:1.0;
     margin:10px;
     margin-right:18px;
