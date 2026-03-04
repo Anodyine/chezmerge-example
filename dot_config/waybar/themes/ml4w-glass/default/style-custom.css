@@ -1,0 +1,6 @@
+/* Local Waybar overrides for ml4w-glass/default */
+@import "./style.css";
+
+#workspaces {
+    min-width: 0;
+}
