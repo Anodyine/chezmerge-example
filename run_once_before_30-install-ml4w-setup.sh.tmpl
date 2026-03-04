@@ -11,9 +11,6 @@ echo ":: Checking for ML4W Setup Script at: $ML4W_SETUP_DIR"
 if [ -d "$ML4W_SETUP_DIR" ]; then
     cd "$ML4W_SETUP_DIR" || exit 1
 
-    # Fix permissions just in case
-    chmod +x *.sh
-
     echo ":: Starting ML4W Setup..."
     echo ":: NOTE: This script may ask for confirmation (gum confirm). Please authorize it."
     
@@ -22,7 +19,8 @@ if [ -d "$ML4W_SETUP_DIR" ]; then
     # We try to pipe 'yes' to it, but 'gum' is interactive-only. 
     # If this hangs, you must press ENTER in the terminal running chezmoi.
     
-    ./setup-arch.sh
+    # Invoke via bash to avoid mutating mode bits in the cached upstream repo.
+    bash ./setup-arch.sh
 else
     echo ":: ERROR: ML4W setup directory not found. Did the submodules clone correctly?"
     exit 1

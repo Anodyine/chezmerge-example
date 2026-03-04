@@ -24,3 +24,9 @@ if [ ! -d "$ML4W_REPO_DIR/.git" ]; then
 else
     echo ":: ML4W cache found. Skipping clone."
 fi
+
+# The cache repo should not report mode-only changes on systems with
+# different executable bit behavior.
+if [ -d "$ML4W_REPO_DIR/.git" ]; then
+    git -C "$ML4W_REPO_DIR" config core.filemode false
+fi

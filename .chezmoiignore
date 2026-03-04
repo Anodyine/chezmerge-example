@@ -13,3 +13,4 @@ fix-btrfs-layout.sh
 # Folders
 tools
 wallpapers
+.external_sources
