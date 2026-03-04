@@ -1,6 +1,6 @@
 * {
     background: rgba(34, 50, 63, 0.7);
-    primary: #95cdf8;
+    primary: #c2995e;
     primary-fixed: #cae6ff;
     primary-fixed-dim: #95cdf8;
     on-primary: #00344e;
