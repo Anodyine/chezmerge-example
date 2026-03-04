@@ -17,6 +17,7 @@
 ml4w_cache_folder="$HOME/.cache/ml4w/hyprland-dotfiles"
 
 defaultwallpaper="$HOME/.config/ml4w/wallpapers/default.jpg"
+persistedwallpaper="$HOME/.config/ml4w/settings/current-wallpaper"
 
 cachefile="$ml4w_cache_folder/current_wallpaper"
 
@@ -24,18 +25,31 @@ cachefile="$ml4w_cache_folder/current_wallpaper"
 # Get current wallpaper
 # -----------------------------------------------------
 
-if [ -f "$cachefile" ]; then
-    sed -i "s|~|$HOME|g" "$cachefile"
-    wallpaper=$(cat $cachefile)
-    if [ -f $wallpaper ]; then
-        echo ":: Wallpaper $wallpaper exists"
+if [ -f "$persistedwallpaper" ]; then
+    sed -i "s|~|$HOME|g" "$persistedwallpaper"
+    wallpaper=$(cat "$persistedwallpaper")
+    if [ -f "$wallpaper" ]; then
+        echo ":: Persisted wallpaper $wallpaper exists"
     else
-        echo ":: Wallpaper $wallpaper does not exist. Using default."
-        wallpaper=$defaultwallpaper
+        echo ":: Persisted wallpaper $wallpaper does not exist. Checking cache/default."
+        wallpaper=""
+    fi
+fi
+
+if [ -z "$wallpaper" ] && [ -f "$cachefile" ]; then
+    sed -i "s|~|$HOME|g" "$cachefile"
+    wallpaper=$(cat "$cachefile")
+    if [ -f "$wallpaper" ]; then
+        echo ":: Cached wallpaper $wallpaper exists"
+    else
+        echo ":: Cached wallpaper $wallpaper does not exist. Using default."
+        wallpaper="$defaultwallpaper"
     fi
 else
-    echo ":: $cachefile does not exist. Using default wallpaper."
-    wallpaper=$defaultwallpaper
+    if [ -z "$wallpaper" ]; then
+        echo ":: No persisted/cache wallpaper found. Using default wallpaper."
+        wallpaper="$defaultwallpaper"
+    fi
 fi
 
 # -----------------------------------------------------

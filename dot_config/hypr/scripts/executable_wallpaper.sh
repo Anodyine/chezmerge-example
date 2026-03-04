@@ -57,6 +57,7 @@ cachefile="$ml4w_cache_folder/current_wallpaper"
 blurredwallpaper="$ml4w_cache_folder/blurred_wallpaper.png"
 squarewallpaper="$ml4w_cache_folder/square_wallpaper.png"
 rasifile="$ml4w_cache_folder/current_wallpaper.rasi"
+persistedwallpaper="$HOME/.config/ml4w/settings/current-wallpaper"
 blurfile="$HOME/.config/ml4w/settings/blur.sh"
 defaultwallpaper="$HOME/.config/ml4w/wallpapers/default.jpg"
 wallpapereffect="$HOME/.config/ml4w/settings/wallpaper-effect.sh"
@@ -93,6 +94,23 @@ if [ ! -f $cachefile ]; then
 fi
 echo "$wallpaper" > $cachefile
 _writeLog "Path of current wallpaper copied to $cachefile"
+
+# Persist selected wallpaper in a stable config file for cross-machine sync.
+echo "$wallpaper" > "$persistedwallpaper"
+_writeLog "Path of current wallpaper copied to $persistedwallpaper"
+
+# Keep waypaper config in sync for compatibility with waypaper --restore.
+if [ -f "$HOME/.config/waypaper/config.ini" ]; then
+    sed -i "s|^wallpaper = .*|wallpaper = $wallpaper|g" "$HOME/.config/waypaper/config.ini"
+fi
+
+# Automatically re-add files so wallpaper changes are captured in chezmoi source.
+if command -v chezmoi >/dev/null 2>&1; then
+    chezmoi add "$persistedwallpaper" >/dev/null 2>&1 || true
+    if [ -f "$HOME/.config/waypaper/config.ini" ]; then
+        chezmoi add "$HOME/.config/waypaper/config.ini" >/dev/null 2>&1 || true
+    fi
+fi
 
 # -----------------------------------------------------
 # Get wallpaper filename
