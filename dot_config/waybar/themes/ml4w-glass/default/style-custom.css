@@ -1,6 +1,14 @@
 /* Local Waybar overrides for ml4w-glass/default */
 @import "./style.css";
 
+.modules-left,
+.modules-right,
+.modules-center {
+    margin: 2px;
+    box-shadow: 0 0 6 @shadow;
+}
+
 #workspaces {
+    padding: 5px 3px 5px 0;
     min-width: 0;
 }
