@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -eu
+
+TMP_DIR="$(mktemp -d)"
+cleanup() {
+  rm -rf "$TMP_DIR"
+}
+trap cleanup EXIT
+
+git clone --depth 1 https://github.com/yeyushengfan258/Future-cursors.git "$TMP_DIR/Future-cursors" >/dev/null 2>&1
+(cd "$TMP_DIR/Future-cursors" && ./install.sh >/dev/null)
+
+if [ ! -d "$HOME/.local/share/icons/Future-cursors" ] && [ ! -d "/usr/share/icons/Future-cursors" ]; then
+  echo "Future-cursors install failed"
+  exit 1
+fi
+
+mkdir -p "$HOME/.icons/default"
+cat > "$HOME/.icons/default/index.theme" <<'EOF'
+[Icon Theme]
+Inherits=Future-cursors
+EOF
+
+echo "Installed Future-cursors"
