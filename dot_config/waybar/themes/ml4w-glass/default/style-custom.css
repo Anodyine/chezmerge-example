@@ -21,11 +21,14 @@
     min-width: 0;
 }
 
-#workspaces button.active,
 #workspaces button:hover {
     background: #363d4a;
 }
 
 #workspaces button.active {
+    background: @primary;
+    color: @on_primary;
     border: 1px solid @primary;
+    box-shadow: none;
+    background-image: none;
 }
