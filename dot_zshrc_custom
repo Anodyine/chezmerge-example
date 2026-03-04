@@ -1,0 +1,19 @@
+# -----------------------------------------------------
+# User zsh additions
+# Loaded by ~/.zshrc after modular ML4W config.
+# -----------------------------------------------------
+
+# Legacy aliases from the previous setup.
+alias ts='~/.config/ml4w/scripts/arch/snapshot.sh'
+alias cleanup='~/.config/ml4w/scripts/arch/cleanup.sh'
+alias ml4w-options='ml4w-hyprland-setup -m options'
+alias ml4w-diagnosis='~/.config/hypr/scripts/diagnosis.sh'
+alias ml4w-hyprland-diagnosis='~/.config/hypr/scripts/diagnosis.sh'
+alias ml4w-qtile-diagnosis='~/.config/ml4w/qtile/scripts/diagnosis.sh'
+alias ml4w-update='~/.config/ml4w/scripts/installupdates.sh'
+alias Qtile='startx'
+alias ascii='~/.config/ml4w/scripts/figlet.sh'
+alias res1='xrandr --output DisplayPort-0 --mode 2560x1440 --rate 120'
+alias res2='xrandr --output DisplayPort-0 --mode 1920x1080 --rate 120'
+alias setkb='setxkbmap de;echo "Keyboard set back to de."'
+alias fix-touchpad='sudo modprobe -r ithc && sudo modprobe ithc'
