@@ -241,7 +241,7 @@
 
 .control-center .notification-row .notification-background .notification.critical {
   background-color: @waybar_bg;
-  background: radial-gradient(circle at 50% 250%, alpha(darker(@waybar_bg), 0.9), alpha(@waybar_bg, 0.9));
+  background: radial-gradient(circle at 50% 250%, alpha(darker(@waybar_bg), 0.8), alpha(@waybar_bg, 0.8));
   border-radius: 10px;
   margin: 5px 0px;
   padding: 10px;
@@ -302,9 +302,9 @@ trough highlight {
 .notification {
     background-color: @waybar_bg;
     border-radius: 12px;
-    background: radial-gradient(circle at 50% 250%, alpha(darker(@waybar_bg), 0.9), alpha(@waybar_bg, 0.9));
+    background: radial-gradient(circle at 50% 250%, alpha(darker(@waybar_bg), 0.8), alpha(@waybar_bg, 0.8));
     border: 1px solid @primary;
-    opacity:1.0;
+    opacity:0.85;
     padding:10px;
     margin:10px 0px 0px 0px;
     box-shadow: 1 1 5 1px @shadow;
