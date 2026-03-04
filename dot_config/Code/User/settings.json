@@ -1,0 +1,46 @@
+{
+  "update.mode": "none", 
+  "workbench.colorTheme": "Monokai Pro (Filter Octagon)",
+  "vim.handleKeys": {
+      "<C-c>": false,
+      "<C-v>": false,
+      "<C-a>": false,
+      "<C-x>": false,
+      "<C-p>": false,
+      "<C-f>": false,
+      "<C-z>": false
+  },
+  "keyboard.dispatch": "keyCode",
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "editor.cursorBlinking": "expand",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "vscode_custom_css.imports": [
+    "file:///home/anodyine/.vscode/extensions/brandonkirbyson.vscode-animations-2.0.7/dist/updateHandler.js"
+  ],
+  "animations.Enabled": true,
+  "animations.Install-Method": "Custom CSS and JS",
+  "animations.CursorAnimationOptions": {
+    "TrailLength": 5 
+  },
+  "animations.CursorAnimation": true,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.cursorStyle": "block",
+  "terminal.integrated.smoothScrolling": true,
+  "terminal.integrated.gpuAcceleration": "on",
+  "terminal.external.linuxExec": "kitty",
+  "terminal.explorerKind": "external",
+  "workbench.iconTheme": "Monokai Pro (Filter Octagon) Icons",
+  "python.analysis.typeCheckingMode": "standard",
+  "editor.fontSize": 16,
+  "files.associations": {
+    "*.tmpl": "gotmpl"
+  },
+  "gopls": {
+    "ui.semanticTokens": true,
+    "templateExtensions": ["tmpl", "gohtml"]
+  },
+  "[gotmpl]": {
+      "editor.semanticHighlighting.enabled": true
+  },
+  "python.defaultInterpreterPath": "/sbin/python3.14"
+}

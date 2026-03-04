@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Define the location of the policies.json based on the OS
+{{ if eq .chezmoi.os "linux" }}
+POLICIES_DIR="/etc/firefox/policies"
+{{ else if eq .chezmoi.os "darwin" }}
+POLICIES_DIR="/Applications/Firefox.app/Contents/Resources/distribution"
+{{ else if eq .chezmoi.os "windows" }}
+# Windows handling is complex in bash, usually handled by a separate .ps1 script
+# or manual placement in C:\Program Files\Mozilla Firefox\distribution\
+echo "Windows automatic installation requires a PowerShell script."
+exit 0
+{{ end }}
+
+# Check if we are on a supported OS
+if [ -n "$POLICIES_DIR" ]; then
+    echo "Installing Firefox policies to $POLICIES_DIR..."
+
+    # Create directory if it doesn't exist
+    if [ ! -d "$POLICIES_DIR" ]; then
+        sudo mkdir -p "$POLICIES_DIR"
+    fi
+
+    # Here we write the content directly to the destination using sudo
+    # UPDATED: Pointing to the official Dracula Dark Colors Scheme slug
+    sudo tee "$POLICIES_DIR/policies.json" > /dev/null <<EOF
+{
+  "policies": {
+    "Extensions": {
+      "Install": [
+        "https://addons.mozilla.org/firefox/downloads/latest/dracula-dark-colorscheme/latest.xpi"
+      ]
+    }
+  }
+}
+EOF
+
+    echo "Firefox policies installed. Restart Firefox to see changes."
+fi

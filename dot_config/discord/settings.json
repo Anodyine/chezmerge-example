@@ -1,0 +1,8 @@
+{
+  "IS_MAXIMIZED": true,
+  "IS_MINIMIZED": false,
+  "offloadAdmControls": true,
+  "chromiumSwitches": {},
+  "BACKGROUND_COLOR": "#121214",
+  "SKIP_HOST_UPDATE": true
+}

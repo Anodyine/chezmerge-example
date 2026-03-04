@@ -1,0 +1,10 @@
+{{- if eq .chezmoi.hostname "ml-server" -}}
+adapter_name = /dev/dri/renderD128
+capture = kms
+encoder = nvenc
+kms_device = /dev/dri/card1
+nvenc_preset = 7
+nvenc_twopass = full_res
+output_name = 1
+port = 30472
+{{- end -}}

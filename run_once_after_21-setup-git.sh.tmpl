@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# This script sets up git config interactively if it's not already set.
+# It uses 'gum' for a nice UI, falling back to 'read' if missing.
+
+echo ":: Checking Git Configuration..."
+
+# 1. Check if Git User Name is set
+if [ -z "$(git config --global user.name)" ]; then
+    echo ":: Git user.name not set."
+    if command -v gum &> /dev/null; then
+        GIT_NAME=$(gum input --header "Enter your Git Name (for commits)" --placeholder "John Doe")
+    else
+        read -p "Enter your Git Name: " GIT_NAME
+    fi
+    
+    if [ -n "$GIT_NAME" ]; then
+        git config --global user.name "$GIT_NAME"
+        echo ":: Git user.name set to '$GIT_NAME'"
+    fi
+fi
+
+# 2. Check if Git Email is set
+if [ -z "$(git config --global user.email)" ]; then
+    echo ":: Git user.email not set."
+    if command -v gum &> /dev/null; then
+        GIT_EMAIL=$(gum input --header "Enter your Git Email" --placeholder "john@example.com")
+    else
+        read -p "Enter your Git Email: " GIT_EMAIL
+    fi
+    
+    if [ -n "$GIT_EMAIL" ]; then
+        git config --global user.email "$GIT_EMAIL"
+        echo ":: Git user.email set to '$GIT_EMAIL'"
+    fi
+fi
+
+echo ":: Git configuration complete."

@@ -1,0 +1,19 @@
+nvenc_preset = 7
+nvenc_twopass = full_res
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+adapter_name = /dev/dri/renderD128
+capture = kms
+encoder = nvenc
+kms_device = /dev/dri/card1
+output_name = 1
+{{ else if eq .chezmoi.hostname "arch-lenovo" -}}
+adapter_name = /dev/dri/renderD128
+capture = kms
+encoder = nvenc
+kms_device = /dev/dri/card1
+{{ else if eq .chezmoi.hostname "ml-server" -}}
+capture = kms
+encoder = nvenc
+adapter_name = /dev/dri/renderD128
+kms_device = /dev/dri/card1
+{{ end }}

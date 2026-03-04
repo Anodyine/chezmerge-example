@@ -1,0 +1,8 @@
+#!/bin/bash
+# 1. nohup: Ignores the hangup signal when the shell exits
+# 2. >/dev/null 2>&1: Closes the stdout/stderr pipes so Chezmoi doesn't wait
+# 3. &: Puts it in the background
+nohup waypaper --restore >/dev/null 2>&1 & disown
+
+sleep 2
+cp {{.chezmoi.sourceDir}}/dot_config/gtk-4.0/colors.css ~/.config/gtk-4.0/colors.css

@@ -1,0 +1,9 @@
+{{- if eq .chezmoi.hostname "ml-server" -}}
+[Desktop Entry]
+Type=Application
+Name=OpenRGB Startup
+Comment=Sets RGB lights on login
+Exec=/usr/bin/openrgb --startminimized --profile test
+Terminal=false
+Hidden=false
+{{- end -}}

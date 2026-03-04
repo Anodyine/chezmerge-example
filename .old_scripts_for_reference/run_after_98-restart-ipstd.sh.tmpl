@@ -1,0 +1,8 @@
+#!/bin/bash
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+set -euo pipefail
+
+echo "Restarting iptsd."
+sudo systemctl restart iptsd
+systemctl status iptsd
+{{ end -}}

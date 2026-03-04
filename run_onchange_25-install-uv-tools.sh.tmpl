@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# -----------------------------------------------------------------------------
+# CHEZMOI TRIGGERS
+# UV List Hash: {{ include "packages.uv.list" | sha256sum }}
+# -----------------------------------------------------------------------------
+
+set -euo pipefail
+
+# ---------- logging
+info() { printf "\033[1;32m[INFO]\033[0m %s\n" "$*"; }
+warn() { printf "\033[1;33m[WARN]\033[0m %s\n" "$*"; }
+err()  { printf "\033[1;31m[ERR ]\033[0m %s\n" "$*" >&2; }
+
+# ---------- globals
+SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+UV_LIST="$SOURCE_DIR/packages.uv.list"
+
+# ---------- helper (matches your existing style)
+read_list() {
+  local file="$1"
+  [ -f "$file" ] || return 1
+  sed -e 's/#.*$//' -e 's/[[:space:]]*$//' -e 's/^[[:space:]]*//' -e '/^$/d' "$file"
+}
+
+install_uv_tools() {
+  if ! command -v uv >/dev/null 2>&1; then
+    err "uv not found. Ensure it is in your pacman list (20-install-packages.sh)."
+    exit 1
+  fi
+
+  if [ -f "$UV_LIST" ]; then
+    mapfile -t TOOLS < <(read_list "$UV_LIST" || true)
+    if [ "${#TOOLS[@]}" -gt 0 ]; then
+      info "Syncing uv tools: ${#TOOLS[@]}"
+      for tool in "${TOOLS[@]}"; do
+        info "Ensuring tool is installed/updated: $tool"
+        # 'uv tool install' is idempotent (updates if already there)
+        uv tool install --upgrade "$tool" || warn "Failed to install uv tool: $tool"
+      done
+    else
+      info "No uv tools to install."
+    fi
+  fi
+}
+
+main() {
+  install_uv_tools
+  info "uv tools sync complete."
+}
+
+main "$@"

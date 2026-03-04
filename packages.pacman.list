@@ -1,0 +1,159 @@
+# --- ML4W Core (The Desktop Environment) ---
+hyprland
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk  # ADDED: Fallback portal
+waybar
+rofi-wayland
+swaync
+swww
+hyprlock
+hyprpaper
+hypridle
+hyprpicker              # ADDED: Color picker (from pkgs.sh)
+hyprshade
+polkit-gnome
+thunar
+nautilus                # ADDED: Fallback file manager (from pkgs.sh)
+tumbler
+libnotify
+brightnessctl
+networkmanager
+network-manager-applet
+nm-connection-editor
+flatpak
+ttf-firacode-nerd
+bluez
+bluez-utils
+blueman
+kitty
+fastfetch
+imagemagick
+pinta
+uwsm
+starship                # RESTORED: Critical for older ML4W configs
+oh-my-posh              # ADDED: Critical for newer ML4W configs
+xdg-user-dirs           # RESTORED: Generates ~/Downloads
+gum
+inotify-tools           # ADDED: Required for Waybar auto-reload
+figlet                  # ADDED: ASCII art for scripts
+
+# --- Dock & Widgets (Chaotic/Official) ---
+nwg-dock-hyprland       # ADDED: The dock (from pkgs.sh)
+nwg-look
+wlogout
+waypaper
+
+# --- CRITICAL: Screenshot & Clipboard ---
+grim
+slurp
+swappy
+wl-clipboard
+cliphist
+grimblast-git
+xclip                   # ADDED: X11 clipboard fallback (from pkgs.sh)
+
+# --- Python Dependencies ---
+python-pip
+python-gobject
+python-screeninfo
+python-pywayland
+python-requests
+python-pywal
+python-rich
+
+# --- Theming ---
+matugen
+bibata-cursor-theme
+colloid-icon-theme-git
+papirus-icon-theme
+breeze                  # ADDED: GTK/Cursor theme (from pkgs.sh)
+qt5ct                   # ADDED: QT5 theming
+qt6ct                   # ADDED: QT6 theming
+adw-gtk-theme
+
+# --- Audio & Media ---
+pipewire
+pipewire-alsa
+pipewire-pulse
+wireplumber
+pavucontrol
+playerctl
+pamixer
+ffmpeg
+libva
+libva-utils
+vdpauinfo
+loupe
+vlc                     # ADDED: Media player (from pkgs.sh)
+
+# --- Fonts ---
+ttf-jetbrains-mono-nerd
+ttf-fira-sans
+ttf-font-awesome
+noto-fonts
+noto-fonts-emoji
+otf-font-awesome
+
+# --- Core Tools ---
+chezmoi
+zsh
+git
+curl
+wget
+unzip
+jq
+tree
+fzf
+rsync
+eza
+pacman-contrib
+gnome-disk-utility
+ethtool
+libxcvt
+power-profiles-daemon
+android-tools
+android-udev
+libmtp
+gvfs
+gvfs-mtp
+openssh
+man-db
+htop                    # ADDED: (from pkgs.sh)
+vim                     # ADDED: (from pkgs.sh)
+neovim                  # ADDED: (from pkgs.sh)
+
+# --- Virtualization & Dev ---
+podman
+distrobox
+uv
+qutebrowser
+visual-studio-code-bin
+
+# --- Applications ---
+obsidian
+telegram-desktop
+hplip
+qt5-wayland
+qt6-wayland
+sunshine
+netbird
+synology-drive
+moonlight-qt
+discord
+qalculate-gtk
+rofi-calc
+ttf-cascadia-code-nerd
+stow
+github-cli
+libreoffice-fresh
+
+envycontrol
+guvcview
+chromium
+
+go
+
+# --- LaTeX & Document Prep ---
+texlive-meta
+texlive-binextra
+zip
