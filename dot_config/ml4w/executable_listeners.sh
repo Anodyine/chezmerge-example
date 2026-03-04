@@ -7,8 +7,9 @@
 # Add more listeners here as needed, following the format:
 # LISTENERS["short-name"]="full/path/to/script.sh"
 declare -A LISTENERS
-LISTENERS["gtk-theme-switcher"]="$HOME/.config/ml4w/listeners/gtk-theme-switcher.sh"
 LISTENERS["low-bat-notification"]="$HOME/.config/ml4w/listeners/low-bat-notification.sh"
+# Keep color generation manual-only via ml4w-generate-colors.
+# gtk-theme-switcher is intentionally not auto-registered.
 # Example for another listener:
 # LISTENERS["another-listener"]="$HOME/.config/ml4w/listeners/another-listener.sh"
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# This script monitors changes to the GTK settings.ini file
-# and automatically switches the 'matugen' theme between light and dark
-# based on the 'gtk-application-prefer-dark-theme' setting.
+# This script monitors changes to GTK settings and reapplies GTK/UI services.
+# Color generation is intentionally manual-only via:
+# ~/.config/ml4w/scripts/ml4w-generate-colors
 
 # Path to the GTK settings file
 SETTINGS_FILE="$HOME/.config/gtk-3.0/settings.ini"
@@ -38,15 +38,13 @@ apply_theme() {
     fi
 
     if [[ "$THEME_PREF" == "1" || "$THEME_PREF" == "true" ]]; then
-        echo "Detected dark theme preference (gtk-application-prefer-dark-theme=1/true). Applying dark matugen theme..."
-        $HOME/.local/bin/matugen image $(cat ~/.cache/ml4w/hyprland-dotfiles/current_wallpaper)
+        echo "Detected dark theme preference. Refreshing GTK/UI services (no automatic color generation)."
         $HOME/.config/nwg-dock-hyprland/launch.sh &
         $HOME/.config/waybar/launch.sh &
         $HOME/.config/hypr/scripts/gtk.sh &
         swaync-client -rs
     elif [[ "$THEME_PREF" == "0" || "$THEME_PREF" == "false" ]]; then
-        echo "Detected light theme preference (gtk-application-prefer-dark-theme=0/false). Applying light matugen theme..."
-        $HOME/.local/bin/matugen image $(cat ~/.cache/ml4w/hyprland-dotfiles/current_wallpaper) -m "light"
+        echo "Detected light theme preference. Refreshing GTK/UI services (no automatic color generation)."
         $HOME/.config/nwg-dock-hyprland/launch.sh &
         $HOME/.config/waybar/launch.sh &
         $HOME/.config/hypr/scripts/gtk.sh &
