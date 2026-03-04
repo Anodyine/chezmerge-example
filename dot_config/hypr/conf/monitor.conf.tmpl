@@ -1,0 +1,54 @@
+{{ if eq .chezmoi.hostname "arch-lenovo" -}}
+#source = ~/.config/hypr/conf/monitors/left_desk.conf
+
+monitor=desc:BOE 0x0A1F,2560x1600@60,0x0,1.333334
+
+monitor=desc:LG Electronics LG ULTRAGEAR,3440x1440@100,2479x-1640,1
+monitor=desc:Samsung Electric Company Odyssey G95C,5120x1440@60,1920x-200,1
+
+#monitor=HDMI-A-1,2048x1536@60,1440x0,1.333334 # right
+#monitor=HDMI-A-1,2048x1536@60,0x-1152,1.333334 # above
+#monitor=desc:Audio Processing Technology,2880x1800@120,-1920x0,1.5 # left
+#monitor=desc:Audio Processing Technology,2880x1800@120,auto,1.5 # right
+monitor=desc:Audio Processing Technology,2880x1800@120,0x-1200,1.5 # above
+monitor=desc:YMK EM160,2880x1800@100,0x-1200,1.5 # above
+#monitor=desc:YMK EM160,2880x1800@100,auto,1.5,transform,1 # right portrait
+#monitor=desc:LG Display Display,2048x1536@60,0x-1152,1.33334 # right
+
+monitor=desc:Dell Inc. S2-R S2-R,preferred,auto,1 # right
+monitor=desc:Dell Inc. S2-L S2-L,preferred,-1920x0,1 # left
+{{ else if eq .chezmoi.hostname "arch-surface" -}}
+#source = ~/.config/hypr/conf/monitors/left_desk.conf
+
+# built in
+monitor=eDP-1,2400x1600@60,0x0,1.25
+
+# desk
+monitor=desc:LG Electronics LG ULTRAGEAR,3440x1440@100,2479x-1640,1
+#monitor=desc:Samsung Electric Company Odyssey G95C,5120x1440@60,1920x-200,1
+monitor=desc:Samsung Electric Company Odyssey G95C,preferred,1920x-200,1
+
+# ipad
+monitor=desc:LG Display,2048x1536@60,auto,1.3333334 # right
+#monitor=desc:LG Display,2048x1536@60,0x-1152,1.3333334 # above
+#monitor=desc:LG Display,2048x1536@60,-1536x0,1.3333334 # left
+
+# uperfect
+#monitor=desc:Audio Processing Technology,2880x1800@60,auto,1.33 # right
+#monitor=desc:Audio Processing Technology,2880x1800@60,0x-1350,1.33 # right
+monitor=desc:YMK EM160,2880x1800@120,0x-1200,1.5 # above
+{{ else if eq .chezmoi.hostname "ml-server" -}}
+source = ~/.config/hypr/conf/monitors/right_desk.conf
+#source = ~/.config/hypr/conf/monitors/left_desk.conf
+#monitor=DP-3,2048x1536@60,-1536x0,1.333334 # left
+monitor=DP-3,2048x1536@60,auto,1.333334 # right
+monitor=desc:Dell Inc. DELL U2412M 7XTXG6C51N2L,1920x1200@60,1920x0,1
+monitor=desc:Dell Inc. DELL U2412M 7XTXG6C51MML,1920x1200@60,0x0,1
+monitor=desc:Laserdyne Technologies,3840x2160@60,0x1200,2
+{{ else if eq .chezmoi.hostname "ml-server-1" -}}
+source = ~/.config/hypr/conf/monitors/left_desk.conf
+{{ else if eq .chezmoi.hostname "ml-server-2" -}}
+source = ~/.config/hypr/conf/monitors/dance_room.conf
+{{ else -}}
+source = ~/.config/hypr/conf/monitors/nwg-displays.conf
+{{ end }}

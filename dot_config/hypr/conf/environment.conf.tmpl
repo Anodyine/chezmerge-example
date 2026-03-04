@@ -1,0 +1,5 @@
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+source = ~/.config/hypr/conf/environments/intel.conf
+{{ else }}
+source = ~/.config/hypr/conf/environments/nvidia.conf
+{{ end }}
