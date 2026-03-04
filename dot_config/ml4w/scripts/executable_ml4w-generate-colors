@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+WALLPAPER_ARG="${1:-}"
+CACHE_WALLPAPER="$HOME/.cache/ml4w/hyprland-dotfiles/current_wallpaper"
+PERSISTED_WALLPAPER="$HOME/.config/ml4w/settings/current-wallpaper"
+DEFAULT_WALLPAPER="$HOME/.config/ml4w/wallpapers/default.jpg"
+SETTINGS_FILE="$HOME/.config/gtk-3.0/settings.ini"
+MATUGEN_BIN="$HOME/.local/bin/matugen"
+
+if [ -n "$WALLPAPER_ARG" ]; then
+    WALLPAPER="$WALLPAPER_ARG"
+elif [ -f "$CACHE_WALLPAPER" ]; then
+    WALLPAPER="$(cat "$CACHE_WALLPAPER")"
+elif [ -f "$PERSISTED_WALLPAPER" ]; then
+    WALLPAPER="$(cat "$PERSISTED_WALLPAPER")"
+else
+    WALLPAPER="$DEFAULT_WALLPAPER"
+fi
+
+if [ ! -f "$WALLPAPER" ]; then
+    echo "Wallpaper not found: $WALLPAPER"
+    exit 1
+fi
+
+if [ ! -x "$MATUGEN_BIN" ]; then
+    echo "matugen not found at $MATUGEN_BIN"
+    exit 1
+fi
+
+THEME_PREF="$(grep -E '^gtk-application-prefer-dark-theme=' "$SETTINGS_FILE" | awk -F'=' '{print $2}' || echo 1)"
+if [ "$THEME_PREF" = "1" ] || [ "$THEME_PREF" = "true" ]; then
+    MODE="dark"
+else
+    MODE="light"
+fi
+
+echo "Generating colors from: $WALLPAPER (mode: $MODE)"
+"$MATUGEN_BIN" image "$WALLPAPER" -m "$MODE"
+
+# Reload UI components that consume generated colors.
+sleep 1
+"$HOME/.config/waybar/launch.sh"
+"$HOME/.config/nwg-dock-hyprland/launch.sh" &
+if command -v pywalfox >/dev/null 2>&1; then
+    pywalfox update
+fi
+sleep 0.1
+if command -v swaync-client >/dev/null 2>&1; then
+    swaync-client -rs
+fi
+
+echo "Color generation complete."
