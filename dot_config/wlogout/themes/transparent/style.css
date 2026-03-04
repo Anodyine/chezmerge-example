@@ -40,7 +40,8 @@ button {
 	animation: gradient_f 20s ease-in infinite;
 	border-radius: 80px; /* Increased border radius for a more rounded look */
 	border:0px;
-	transition: all 0.3s cubic-bezier(.55, 0.0, .28, 1.682), box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+	/* Snappier hover/focus feedback */
+	transition: background-color 0.1s ease-in-out, background-size 0.05s ease-in-out, box-shadow 0.1s ease-in-out, border-radius 0.1s ease-in-out;
 	color: @foreground;
 	background-color: transparent;
 	margin: 10px; 
@@ -55,13 +56,11 @@ button:focus {
 }
 
 button:hover {
-    background-color: alpha(@primary, 0.9);;
-	opacity: 0.8;
-    color: @on_primary;
-    background-size: 30%;
-    margin: 30px;
-    border-radius: 80px;
-    box-shadow: 0 0 50px @shadow;
+	background-color: alpha(@primary, 0.6);
+    background-size: 28%;
+	border: 0px;
+	margin: 10px;
+	box-shadow: 0 0 50px @shadow;
 }
 
 /* Adjust the size of the icon or content inside the button */
