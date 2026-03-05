@@ -3,7 +3,7 @@
     primary: #ebb34d;
     primary-fixed: #cae6ff;
     primary-fixed-dim: #95cdf8;
-    on-primary: #00344e;
+    on-primary: #382e1f;
     on-primary-fixed: #001e2f;
     on-primary-fixed-variant: #004b6f;
     primary-container: #004b6f;

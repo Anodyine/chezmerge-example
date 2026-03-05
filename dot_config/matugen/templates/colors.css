@@ -9,3 +9,4 @@
 <* endfor *>
 /* Keep user-selected primary stable across regenerations */
 @define-color primary #ebb34d;
+@define-color on_primary #382e1f;

@@ -3,7 +3,7 @@
     primary: #ebb34d;
     primary-fixed: {{colors.primary_fixed.default.hex}};
     primary-fixed-dim: {{colors.primary_fixed_dim.default.hex}};
-    on-primary: {{colors.on_primary.default.hex}};
+    on-primary: #382e1f;
     on-primary-fixed: {{colors.on_primary_fixed.default.hex}};
     on-primary-fixed-variant: {{colors.on_primary_fixed_variant.default.hex}};
     primary-container: {{colors.primary_container.default.hex}};
