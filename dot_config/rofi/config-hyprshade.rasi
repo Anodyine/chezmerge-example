@@ -87,7 +87,7 @@ inputbar {
     spacing:                     0em;
     padding:                     1em;
     children:                    [ "textbox-prompt-colon", "entry" ];
-    background-color:            @surface;
+    background-color:            @highlight;
 }
 
 textbox-prompt-colon {
@@ -104,7 +104,7 @@ entry {
     enabled:                     true;
     spacing:                     1em;
     padding:                     0.5em;
-    background-color:            @surface;
+    background-color:            transparent;
     text-color:                  @on-surface;
     cursor:                      text;
     placeholder:                 "Search";
@@ -151,7 +151,7 @@ element {
 }
 
 element selected.normal {
-    background-color:            @surface;
+    background-color:            @highlight;
     text-color:                  @on-surface;
     border-radius:               1.5em;
 }
@@ -177,7 +177,7 @@ element selected.urgent {
 }
 
 element selected.active {
-    background-color:            inherit;
+    background-color:            @highlight;
     text-color:                  @on-surface;
 }
 
@@ -209,4 +209,5 @@ element-text {
     cursor:                      inherit;
     background-color:            transparent;
     text-color:                  inherit;
+    highlight:                   bold #ebb34d;
 }

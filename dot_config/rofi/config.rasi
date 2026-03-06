@@ -199,7 +199,7 @@ element selected.urgent {
 }
 
 element selected.active {
-    background-color:            inherit;
+    background-color:            @highlight;
     text-color:                  @on-surface;
 }
 
@@ -232,6 +232,7 @@ element-text {
     cursor:                      inherit;
     background-color:            transparent;
     text-color:                  inherit;
+    highlight:                   bold #ebb34d;
 }
 
 // Error message //
