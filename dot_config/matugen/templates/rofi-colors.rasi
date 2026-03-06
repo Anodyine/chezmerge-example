@@ -1,6 +1,6 @@
 * {
     background: rgba(46, 48, 61, 0.7);
-    highlight: rgba(105, 110, 130, 0.7);
+    highlight: rgba(96, 101, 121, 0.7);
     primary: #ebb34d;
     primary-fixed: {{colors.primary_fixed.default.hex}};
     primary-fixed-dim: {{colors.primary_fixed_dim.default.hex}};
