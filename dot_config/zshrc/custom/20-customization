@@ -29,6 +29,11 @@ plugins=(
 # Set-up oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 
+# Make inline shell comments readable in Kitty.
+# Default from current stack is fg=black,bold, which is too dark.
+typeset -gA ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[comment]='fg=244'
+
 # -----------------------------------------------------
 # Set-up FZF key bindings (CTRL R for fuzzy history finder)
 # -----------------------------------------------------
