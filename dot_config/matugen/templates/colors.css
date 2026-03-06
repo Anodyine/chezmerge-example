@@ -10,3 +10,9 @@
 /* Keep user-selected primary stable across regenerations */
 @define-color primary #ebb34d;
 @define-color on_primary #382e1f;
+/* Keep base UI background aligned with kitty */
+@define-color background #2e303d;
+@define-color surface #2e303d;
+@define-color surface_dim #2e303d;
+@define-color blur_background rgba(46, 48, 61, 0.3);
+@define-color blur_background8 rgba(46, 48, 61, 0.8);

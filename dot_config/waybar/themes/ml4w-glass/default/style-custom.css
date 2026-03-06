@@ -6,11 +6,11 @@
 .modules-center {
     margin: 2px;
     box-shadow: 0 0 6 @shadow;
-    background-color: #2d3241;
+    background-color: @surface;
     background: radial-gradient(
             circle at 50% 250%,
-            alpha(darker(#2d3241), 0.9),
-            alpha(#2d3241, 0.9)
+            alpha(darker(@surface), 0.9),
+            alpha(@surface, 0.9)
         )
         padding-box,
         linear-gradient(@primary, @on_primary) border-box;

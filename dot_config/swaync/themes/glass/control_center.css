@@ -15,7 +15,7 @@
 @define-color bordercolor @primary;
 @define-color fontcolor @on_surface;
 @define-color text @on_surface;
-@define-color waybar_bg #2d3241;
+@define-color waybar_bg @surface;
 
 /* === Global Reset === */
 * {

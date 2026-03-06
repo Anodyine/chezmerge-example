@@ -2,10 +2,10 @@
 * Css Colors
 * Generated with Matugen
 */
-@define-color blur_background rgba(16, 20, 23, 0.3);
-@define-color blur_background8 rgba(16, 20, 23, 0.8);
+@define-color blur_background rgba(46, 48, 61, 0.3);
+@define-color blur_background8 rgba(46, 48, 61, 0.8);
 
-    @define-color background #101417;
+    @define-color background #2e303d;
 
     @define-color error #ffb4ab;
 
@@ -77,7 +77,7 @@
 
     @define-color source_color #061a27;
 
-    @define-color surface #101417;
+    @define-color surface #2e303d;
 
     @define-color surface_bright #363a3e;
 
@@ -91,7 +91,7 @@
 
     @define-color surface_container_lowest #0b0f12;
 
-    @define-color surface_dim #101417;
+    @define-color surface_dim #2e303d;
 
     @define-color surface_tint #95cdf8;
 
