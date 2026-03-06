@@ -101,7 +101,7 @@ button {
 button selected {
     padding:                     15px;
     border-radius:               2em;    
-    background-color:            rgba(105, 110, 130, 0.7);
+    background-color:            @highlight;
     text-color:                  @on-surface;
 }
 
@@ -111,7 +111,7 @@ inputbar {
     margin: 1em;
     children:                    [ "textbox-prompt-colon", "entry" ];
     border-radius:               2em;
-    background-color:            rgba(105, 110, 130, 0.7);
+    background-color:            @highlight;
 }
 
 textbox-prompt-colon {
@@ -173,7 +173,7 @@ element {
 }
 
 element selected.normal {
-    background-color:            rgba(105, 110, 130, 0.7);
+    background-color:            @highlight;
     text-color:                  @on-surface;
     border-radius:               1.5em;
 }

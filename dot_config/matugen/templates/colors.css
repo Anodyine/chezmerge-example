@@ -16,3 +16,5 @@
 @define-color surface_dim #2e303d;
 @define-color blur_background rgba(46, 48, 61, 0.3);
 @define-color blur_background8 rgba(46, 48, 61, 0.8);
+/* Reusable highlight tint for overlays/select states */
+@define-color highlight rgba(105, 110, 130, 0.7);
