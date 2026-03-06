@@ -86,6 +86,7 @@ imagebox {
 inputbar {
     enabled:                     true;
     spacing:                     0em;
+    margin:                      1em;
     padding:                     1em;
     children:                    [ "textbox-prompt-colon", "entry" ];
     background-color:            @highlight;
