@@ -31,4 +31,5 @@
     border: 1px solid @primary;
     box-shadow: none;
     background-image: none;
+    min-width: 16px;
 }
