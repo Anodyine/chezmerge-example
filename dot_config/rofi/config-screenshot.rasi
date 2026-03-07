@@ -178,5 +178,5 @@ element-text {
     cursor:                      inherit;
     background-color:            transparent;
     text-color:                  inherit;
-    highlight:                   bold #ebb34d;
+    highlight:                   bold #dbab27;
 }
