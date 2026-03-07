@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Managed by chezmerge: pull submodule sync hook
+# Keep the local submodule worktree aligned with the commit recorded
+# in the parent repository after pull/merge/rebase operations.
+git submodule update --init --recursive .chezmerge-upstream || true
