@@ -9,7 +9,7 @@
     background-color: @surface;
     background: radial-gradient(
             circle at 50% 250%,
-            alpha(darker(@surface), 0.9),
+            alpha(#2c385e, 0.8),
             alpha(@surface, 0.9)
         )
         padding-box,
