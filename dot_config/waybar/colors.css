@@ -4,6 +4,7 @@
 */
 @define-color blur_background rgba(46, 48, 61, 0.3);
 @define-color blur_background8 rgba(46, 48, 61, 0.8);
+@define-color selection rgba(96, 101, 121, 0.7);
 
     @define-color background #2e303d;
 

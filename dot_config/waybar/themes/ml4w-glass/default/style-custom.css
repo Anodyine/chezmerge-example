@@ -22,7 +22,7 @@
 }
 
 #workspaces button:hover {
-    background: #363d4a;
+    background: @selection;
 }
 
 #workspaces button.active {
