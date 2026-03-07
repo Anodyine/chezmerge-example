@@ -232,7 +232,7 @@ element-text {
     cursor:                      inherit;
     background-color:            transparent;
     text-color:                  inherit;
-    highlight:                   bold #dbab27;
+    highlight:                   bold #f2ad18;
 }
 
 // Error message //
