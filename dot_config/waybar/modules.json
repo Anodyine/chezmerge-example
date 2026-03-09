@@ -324,7 +324,6 @@
     "tooltip-format-disconnected": "Disconnected",
     "max-length": 50,
     "on-click": "~/.config/ml4w/settings/networkmanager.sh",
-    "on-click-right": "~/.config/ml4w/scripts/ml4w-toggle-nmapplet toggle",
   },
   // Battery
   "battery": {
