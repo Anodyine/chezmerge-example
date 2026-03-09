@@ -22,6 +22,9 @@ exec-once = ~/.config/hypr/scripts/gtk.sh
 # Using hypridle to start hyprlock
 exec-once = hypridle
 
+# Ensure NetworkManager tray applet is available in Waybar tray.
+exec-once = sh -c 'command -v nm-applet >/dev/null 2>&1 && ! pgrep -x nm-applet >/dev/null && nm-applet --indicator'
+
 {{ if eq .chezmoi.hostname "ml-server" -}}
 exec-once = /usr/bin/openrgb --startminimized --profile test
 {{ end }}
