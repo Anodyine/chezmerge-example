@@ -96,7 +96,8 @@ update_hooks() {
 }
 
 update_modules() {
-    local modules_line modules trimmed tmp_file
+    local enable_nvidia="${1:-0}"
+    local modules_line modules trimmed tmp_file filtered
 
     modules_line="$(grep '^MODULES=' "$MKINITCPIO_CONF" || true)"
     if [ -z "$modules_line" ]; then
@@ -107,14 +108,33 @@ update_modules() {
     trimmed="${trimmed%)}"
     read -r -a modules <<<"$trimmed"
 
+    filtered=()
     local module
-    for module in nvidia nvidia_modeset nvidia_uvm nvidia_drm; do
-        if [[ " ${modules[*]} " != *" $module "* ]]; then
-            modules+=("$module")
-        fi
+    for module in "${modules[@]}"; do
+        case "$module" in
+            nvidia|nvidia_modeset|nvidia_uvm|nvidia_drm)
+                ;;
+            *)
+                filtered+=("$module")
+                ;;
+        esac
     done
+    modules=("${filtered[@]}")
 
-    printf -v modules_line 'MODULES=(%s)' "${modules[*]}"
+    if [ "$enable_nvidia" = "1" ]; then
+        for module in nvidia nvidia_modeset nvidia_uvm nvidia_drm; do
+            if [[ " ${modules[*]} " != *" $module "* ]]; then
+                modules+=("$module")
+            fi
+        done
+    fi
+
+    if [ "${#modules[@]}" -eq 0 ]; then
+        modules_line='MODULES=()'
+    else
+        printf -v modules_line 'MODULES=(%s)' "${modules[*]}"
+    fi
+
     tmp_file="$(mktemp)"
     awk -v new_line="$modules_line" '
         BEGIN { replaced = 0 }
@@ -186,6 +206,9 @@ ensure_limine_cmdline_flags() {
                 if (line !~ /(^|[[:space:]])nvidia-drm\.fbdev=1($|[[:space:]])/) {
                     line = line " nvidia-drm.fbdev=1"
                 }
+            } else {
+                gsub(/(^|[[:space:]])nvidia-drm\.modeset=1($|[[:space:]])/, " ", line)
+                gsub(/(^|[[:space:]])nvidia-drm\.fbdev=1($|[[:space:]])/, " ", line)
             }
             gsub(/[[:space:]]+/, " ", line)
             sub(/^ /, "", line)
@@ -213,7 +236,7 @@ preflight() {
 }
 
 has_nvidia() {
-    modinfo nvidia_drm >/dev/null 2>&1
+    lsmod | grep -q '^nvidia_drm'
 }
 
 sync_limine_configs() {
@@ -262,9 +285,9 @@ update_hooks
 HAS_NVIDIA=0
 if has_nvidia; then
     info "Configuring early NVIDIA KMS for Plymouth"
-    update_modules
     HAS_NVIDIA=1
 fi
+update_modules "$HAS_NVIDIA"
 
 info "Ensuring Limine kernel args include splash flags"
 ensure_limine_cmdline_flags "$HAS_NVIDIA"
