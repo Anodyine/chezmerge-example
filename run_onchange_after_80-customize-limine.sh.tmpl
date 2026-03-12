@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DEFAULT_CONF="/etc/default/limine"
+MASTER_CONF="/boot/limine.conf"
+PRIMARY_COLOR_FILE="${HOME}/.config/ml4w/colors/primary"
+SECONDARY_COLOR_FILE="${HOME}/.config/ml4w/colors/secondary"
+BACKGROUND_COLOR="#0b132b"
+FOREGROUND_COLOR="#eaf2f1"
+INTERFACE_BRANDING="ML4W OS"
+INTERFACE_BRANDING_COLOR="3"
+TARGET_OS_NAME="ML4W OS"
+
+if [ ! -f "$DEFAULT_CONF" ]; then
+    echo "ℹ️ $DEFAULT_CONF not found. Skipping Limine customization."
+    exit 0
+fi
+
+if ! command -v limine-mkinitcpio >/dev/null && ! command -v limine-update >/dev/null; then
+    echo "ℹ️ Limine regeneration tool not found. Skipping customization."
+    exit 0
+fi
+
+sudo sed -i '/^TARGET_OS_NAME=/d' "$DEFAULT_CONF"
+echo "TARGET_OS_NAME=\"$TARGET_OS_NAME\"" | sudo tee -a "$DEFAULT_CONF" >/dev/null
+
+if command -v limine-mkinitcpio >/dev/null; then
+    sudo limine-mkinitcpio
+else
+    sudo limine-update
+fi
+
+primary_color="${BACKGROUND_COLOR#\#}"
+secondary_color="${FOREGROUND_COLOR#\#}"
+
+if [ -f "$PRIMARY_COLOR_FILE" ]; then
+    primary_color="$(tr -d '\n' < "$PRIMARY_COLOR_FILE" | sed 's/^#//')"
+fi
+
+if [ -f "$SECONDARY_COLOR_FILE" ]; then
+    secondary_color="$(tr -d '\n' < "$SECONDARY_COLOR_FILE" | sed 's/^#//')"
+fi
+
+rewrite_limine_theme_block() {
+    local conf="$1"
+    local tmp_file
+
+    tmp_file="$(mktemp)"
+    awk \
+        -v interface_branding="$INTERFACE_BRANDING" \
+        -v interface_branding_color="$INTERFACE_BRANDING_COLOR" \
+        -v backdrop="$BACKGROUND_COLOR" \
+        -v term_background="ff${BACKGROUND_COLOR#\#}" \
+        -v term_foreground="${FOREGROUND_COLOR#\#}" \
+        -v term_background_bright="$primary_color" \
+        -v term_foreground_bright="${FOREGROUND_COLOR#\#}" \
+        -v term_palette="${BACKGROUND_COLOR#\#};${primary_color};${secondary_color};${primary_color};${primary_color};${secondary_color};${FOREGROUND_COLOR#\#};${FOREGROUND_COLOR#\#}" \
+        -v term_palette_bright="${primary_color};${primary_color};${secondary_color};${primary_color};${primary_color};${secondary_color};${FOREGROUND_COLOR#\#};${FOREGROUND_COLOR#\#}" '
+            function print_theme_block() {
+                print "interface_branding: " interface_branding
+                print "interface_branding_color: " interface_branding_color
+                print "backdrop: " backdrop
+                print "term_background: " term_background
+                print "term_foreground: " term_foreground
+                print "term_background_bright: " term_background_bright
+                print "term_foreground_bright: " term_foreground_bright
+                print "term_palette: " term_palette
+                print "term_palette_bright: " term_palette_bright
+            }
+            /^interface_branding:/ || /^#interface_branding:/ || /^interface_branding_color:/ || /^#interface_branding_color:/ || /^backdrop:/ || /^term_background:/ || /^term_foreground:/ || /^term_background_bright:/ || /^term_foreground_bright:/ || /^term_palette:/ || /^term_palette_bright:/ {
+                next
+            }
+            !os_entry_renamed && /^\/\+?Arch Linux( \(linux\))?$/ {
+                print "/+ML4W OS"
+                os_entry_renamed = 1
+                next
+            }
+            !os_comment_renamed && /^comment: Arch Linux$/ {
+                print "comment: ML4W OS"
+                os_comment_renamed = 1
+                next
+            }
+            {
+                print
+            }
+            !inserted && /^hash_mismatch_panic:/ {
+                print_theme_block()
+                inserted = 1
+            }
+            END {
+                if (!inserted) {
+                    print_theme_block()
+                }
+            }
+        ' "$conf" > "$tmp_file"
+    sudo tee "$conf" >/dev/null < "$tmp_file"
+    rm -f "$tmp_file"
+}
+
+limine_confs=("$MASTER_CONF")
+while IFS= read -r config; do
+    [ "$config" = "$MASTER_CONF" ] && continue
+    limine_confs+=("$config")
+done < <(find /boot -maxdepth 4 -type f -name 'limine.conf' 2>/dev/null | sort)
+
+for config in "${limine_confs[@]}"; do
+    [ -f "$config" ] || continue
+    rewrite_limine_theme_block "$config"
+done
+
+for target in /boot/EFI/limine/limine.conf /boot/EFI/arch-limine/limine.conf; do
+    if [ -d "$(dirname "$target")" ]; then
+        sudo cp -f "$MASTER_CONF" "$target"
+    fi
+done
+
+echo "✅ Limine customization applied."
