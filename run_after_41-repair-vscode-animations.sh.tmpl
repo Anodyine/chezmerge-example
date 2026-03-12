@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+info() { printf "[INFO] %s\n" "$*"; }
+warn() { printf "[WARN] %s\n" "$*" >&2; }
+
+detect_vscode_dir() {
+  local candidates=(
+    "/opt/visual-studio-code"
+    "/usr/share/code"
+    "/usr/lib/code"
+    "/usr/share/vscodium"
+    "/opt/visual-studio-code-insiders"
+  )
+  local dir
+  for dir in "${candidates[@]}"; do
+    if [[ -d "$dir" ]]; then
+      printf "%s\n" "$dir"
+      return 0
+    fi
+  done
+  return 1
+}
+
+find_animation_script() {
+  local ext_dir="$HOME/.vscode/extensions"
+  [[ -d "$ext_dir" ]] || return 1
+
+  find "$ext_dir" -path "*/brandonkirbyson.vscode-animations-*/dist/updateHandler.js" -print 2>/dev/null | sort | tail -n 1
+}
+
+stable_animation_script_path() {
+  printf "%s\n" "$HOME/.config/Code/animations/updateHandler.js"
+}
+
+ensure_animation_symlink() {
+  local anim_script="$1"
+  local stable_script
+  stable_script="$(stable_animation_script_path)"
+
+  mkdir -p "$(dirname "$stable_script")"
+  ln -sfn "$anim_script" "$stable_script"
+}
+
+detect_workbench_html() {
+  local vscode_dir="$1"
+  local candidates=(
+    "$vscode_dir/resources/app/out/vs/code/electron-browser/workbench/workbench.html"
+    "$vscode_dir/resources/app/out/vs/code/electron-browser/workbench/workbench.esm.html"
+    "$vscode_dir/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html"
+    "$vscode_dir/resources/app/out/vs/code/electron-sandbox/workbench/workbench.esm.html"
+  )
+  local path
+  for path in "${candidates[@]}"; do
+    if [[ -f "$path" ]]; then
+      printf "%s\n" "$path"
+      return 0
+    fi
+  done
+  return 1
+}
+
+ensure_vscode_permissions() {
+  local vscode_dir="$1"
+  local owner
+  owner="$(stat -c '%U' "$vscode_dir")"
+
+  if [[ "$owner" == "$(id -un)" ]]; then
+    return 0
+  fi
+
+  info "VS Code files under $vscode_dir are owned by $owner; fixing ownership for animation injection."
+  sudo chown -R "$(id -un):$(id -gn)" "$vscode_dir"
+}
+
+ensure_workbench_patch() {
+  local workbench_html="$1"
+  local stable_script
+  stable_script="$(stable_animation_script_path)"
+
+  local source_hash current_hash
+  source_hash="$(sha256sum "$stable_script" | awk '{print $1}')"
+  current_hash="$(grep -o 'CHEZMOI-VSCODE-ANIMATIONS-HASH [0-9a-f]*' "$workbench_html" 2>/dev/null | awk '{print $2}' | tail -n 1 || true)"
+
+  if [[ "$current_hash" == "$source_hash" ]]; then
+    return 0
+  fi
+
+  local workbench_dir backup_file tmp_html tmp_script wrapped_script final_html
+  workbench_dir="$(dirname "$workbench_html")"
+  backup_file="$workbench_dir/workbench.chezmoi-vscode-animations.bak"
+  tmp_html="$(mktemp)"
+  tmp_script="$(mktemp)"
+  wrapped_script="$(mktemp)"
+  final_html="$(mktemp)"
+
+  if [[ ! -f "$backup_file" ]] && ! grep -q 'CHEZMOI-VSCODE-ANIMATIONS-START' "$workbench_html"; then
+    cp "$workbench_html" "$backup_file"
+  fi
+
+  cp "$stable_script" "$tmp_script"
+
+  perl -0pe 's/<!-- !! VSCODE-CUSTOM-CSS-START !! -->.*?<!-- !! VSCODE-CUSTOM-CSS-END !! -->\n*//sg; s/<!-- !! VSCODE-CUSTOM-CSS-SESSION-ID [\w-]+ !! -->\n*//sg; s/<!-- !! CHEZMOI-VSCODE-ANIMATIONS-HASH [0-9a-f]+ !! -->\n*//sg; s/<!-- !! CHEZMOI-VSCODE-ANIMATIONS-START !! -->.*?<!-- !! CHEZMOI-VSCODE-ANIMATIONS-END !! -->\n*//sg; s#<meta\s+http-equiv="Content-Security-Policy"[\s\S]*?/>##sg' "$workbench_html" >"$tmp_html"
+
+  {
+    printf '<!-- !! CHEZMOI-VSCODE-ANIMATIONS-HASH %s !! -->\n' "$source_hash"
+    printf '<!-- !! CHEZMOI-VSCODE-ANIMATIONS-START !! -->\n'
+    printf '<script>\n'
+    cat "$tmp_script"
+    printf '\n</script>\n'
+    printf '<!-- !! CHEZMOI-VSCODE-ANIMATIONS-END !! -->\n'
+  } >"$wrapped_script"
+
+  perl -0e 'my ($html_path, $inject_path) = @ARGV; my $html = do { local $/; open my $fh, "<", $html_path or die $!; <$fh> }; my $inject = do { local $/; open my $fh, "<", $inject_path or die $!; <$fh> }; $html =~ s#</html>#$inject</html>#s or die "missing </html> marker\n"; print $html;' "$tmp_html" "$wrapped_script" >"$final_html"
+  cp "$final_html" "$workbench_html"
+  rm -f "$tmp_html" "$tmp_script" "$wrapped_script" "$final_html"
+
+  info "Patched VS Code workbench for animations."
+}
+
+main() {
+  local anim_script
+  if ! anim_script="$(find_animation_script)"; then
+    exit 0
+  fi
+
+  local vscode_dir
+  if ! vscode_dir="$(detect_vscode_dir)"; then
+    warn "VS Code install directory not found; skipping animations repair."
+    exit 0
+  fi
+
+  ensure_vscode_permissions "$vscode_dir"
+  ensure_animation_symlink "$anim_script"
+
+  local workbench_html
+  if ! workbench_html="$(detect_workbench_html "$vscode_dir")"; then
+    warn "VS Code workbench HTML not found; skipping animations patch."
+    exit 0
+  fi
+
+  ensure_workbench_patch "$workbench_html"
+  info "Animations prerequisite repair complete. Restart VS Code if it is open."
+}
+
+main "$@"
