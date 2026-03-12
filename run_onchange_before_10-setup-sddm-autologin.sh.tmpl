@@ -3,6 +3,10 @@
 # chezmoi managed dependency hashes:
 # main-qml={{ include "files/ml4w-sddm/Main.qml" | sha256sum }}
 # login-screen-qml={{ include "files/ml4w-sddm/components/LoginScreen.qml" | sha256sum }}
+# input-qml={{ include "files/ml4w-sddm/components/Input.qml" | sha256sum }}
+# avatar-qml={{ include "files/ml4w-sddm/components/Avatar.qml" | sha256sum }}
+# spinner-qml={{ include "files/ml4w-sddm/components/Spinner.qml" | sha256sum }}
+# icon-button-qml={{ include "files/ml4w-sddm/components/IconButton.qml" | sha256sum }}
 set -euo pipefail
 
 TARGET_DIR="/etc/sddm.conf.d"
@@ -13,6 +17,7 @@ THEME_DIR="/usr/share/sddm/themes/ml4w"
 THEME_CONFIG="$THEME_DIR/configs/ml4w.conf"
 TMP_DIR="${HOME}/.cache/ml4w-tmp/ml4w-sddm"
 PRIMARY_COLOR_FILE="${HOME}/.config/ml4w/colors/primary"
+KITTY_FOREGROUND_COLOR="#eaf2f1"
 SOURCE_DIR="{{ .chezmoi.sourceDir }}"
 OVERRIDE_DIR="$SOURCE_DIR/files/ml4w-sddm"
 HOSTNAME="{{ .chezmoi.hostname }}"
@@ -43,9 +48,9 @@ apply_ml4w_overrides() {
         sudo cp -f "$OVERRIDE_DIR/Main.qml" "$THEME_DIR/Main.qml"
     fi
 
-    if [ -f "$OVERRIDE_DIR/components/LoginScreen.qml" ]; then
+    if [ -d "$OVERRIDE_DIR/components" ]; then
         sudo mkdir -p "$THEME_DIR/components"
-        sudo cp -f "$OVERRIDE_DIR/components/LoginScreen.qml" "$THEME_DIR/components/LoginScreen.qml"
+        sudo cp -f "$OVERRIDE_DIR/components/"*.qml "$THEME_DIR/components/"
     fi
 }
 
@@ -57,13 +62,13 @@ if [ -f "$PRIMARY_COLOR_FILE" ] && [ -f "$THEME_CONFIG" ]; then
     PRIMARY_COLOR=$(cat "$PRIMARY_COLOR_FILE")
     sudo sed -i "s/^primary-color = .*/primary-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i "s/^color = .*/color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
-    sudo sed -i "s/^content-color = .*/content-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
-    sudo sed -i "s/^active-content-color = .*/active-content-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^content-color = .*/content-color = \"$KITTY_FOREGROUND_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^active-content-color = .*/active-content-color = \"$KITTY_FOREGROUND_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i "s/^normal-color = .*/normal-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i "s/^warning-color = .*/warning-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i "s/^error-color = .*/error-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
-    sudo sed -i "s/^key-content-color = .*/key-content-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
-    sudo sed -i "s/^selection-content-color = .*/selection-content-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^key-content-color = .*/key-content-color = \"$KITTY_FOREGROUND_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^selection-content-color = .*/selection-content-color = \"$KITTY_FOREGROUND_COLOR\"/" "$THEME_CONFIG"
 fi
 
 GREETER_ENV="QML2_IMPORT_PATH=/usr/share/sddm/themes/ml4w/components/,QT_IM_MODULE=qtvirtualkeyboard"

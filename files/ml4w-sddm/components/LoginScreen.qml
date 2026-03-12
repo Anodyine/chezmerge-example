@@ -160,7 +160,7 @@ Item {
                         horizontalAlignment: Text.AlignHCenter;
                     }
                 }
-                color: Config.warningMessageErrorColor
+                color: "#eaf2f1"
                 font.pixelSize: Math.max(8, Config.passwordInputFontSize * Config.generalScale)
                 font.family: Config.passwordInputFontFamily
             }
@@ -264,7 +264,7 @@ Item {
                 font.family: Config.usernameFontFamily
                 font.weight: Config.usernameFontWeight
                 font.pixelSize: Config.usernameFontSize * Config.generalScale
-                color: Config.usernameColor
+                color: "#eaf2f1"
                 text: loginScreen.userRealName || loginScreen.userName || ""
                 visible: loginScreen.foundUsers
 
@@ -328,8 +328,8 @@ Item {
                     fontFamily: Config.loginButtonFontFamily
                     fontSize: Config.loginButtonFontSize
                     fontWeight: Config.loginButtonFontWeight
-                    contentColor: Config.loginButtonContentColor
-                    activeContentColor: Config.loginButtonActiveContentColor
+                    contentColor: "#eaf2f1"
+                    activeContentColor: "#eaf2f1"
                     backgroundColor: Config.loginButtonBackgroundColor
                     backgroundOpacity: Config.loginButtonBackgroundOpacity
                     activeBackgroundColor: Config.loginButtonActiveBackgroundColor
@@ -375,7 +375,7 @@ Item {
                 font.pixelSize: Config.warningMessageFontSize * Config.generalScale
                 font.family: Config.warningMessageFontFamily
                 font.weight: Config.warningMessageFontWeight
-                color: Config.warningMessageNormalColor
+                color: "#eaf2f1"
                 visible: text !== "" && loginScreen.state !== "authenticating" && (capslockWarning ? loginScreen.userNeedsPassword : true)
                 opacity: visible ? 1.0 : 0.0
                 anchors.top: loginArea.bottom
@@ -410,7 +410,7 @@ Item {
                 function warn(message, type) {
                     clear();
                     text = message;
-                    color = type === "error" ? Config.warningMessageErrorColor : (type === "warning" ? Config.warningMessageWarningColor : Config.warningMessageNormalColor);
+                    color = "#eaf2f1";
                     if (message === (textConstants.capslockWarning || "Caps Lock is on"))
                         capslockWarning = true;
                 }
@@ -426,9 +426,9 @@ Item {
     Item {
         id: loginBackdrop
         z: -1
-        property int horizontalPadding: 43
-        property int topPadding: 53
-        property int bottomPadding: 43
+        property int horizontalPadding: 63
+        property int topPadding: 73
+        property int bottomPadding: 63
         property real contentWidth: Config.loginAreaPosition === "left" || Config.loginAreaPosition === "right"
             ? loginContainer.width
             : Math.max(
@@ -474,7 +474,7 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 22
-                color: "#414877"
+                color: "#333751"
                 opacity: 0.5
             }
         }
