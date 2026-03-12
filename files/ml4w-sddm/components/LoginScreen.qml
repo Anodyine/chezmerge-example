@@ -475,7 +475,7 @@ Item {
                 anchors.fill: parent
                 radius: 22
                 color: "#333751"
-                opacity: 0.5
+                opacity: 0.58
             }
         }
 
