@@ -42,6 +42,10 @@ fi
 
 echo "⚖️ Setting Snapper retention limits..."
 sudo snapper -c root set-config \
+    NUMBER_CLEANUP="yes" \
+    NUMBER_LIMIT="20" \
+    NUMBER_LIMIT_IMPORTANT="4" \
+    EMPTY_PRE_POST_CLEANUP="yes" \
     TIMELINE_LIMIT_HOURLY="10" \
     TIMELINE_LIMIT_DAILY="21" \
     TIMELINE_LIMIT_WEEKLY="4" \
@@ -59,6 +63,8 @@ sudo sed -i '/^LIMINE_CONFIG=/d' "$DEFAULT_CONF"
 echo "LIMINE_CONFIG=\"$MASTER_CONF\"" | sudo tee -a "$DEFAULT_CONF" > /dev/null
 sudo sed -i '/^ROOT_SNAPSHOTS_PATH=/d' "$DEFAULT_CONF"
 echo "ROOT_SNAPSHOTS_PATH=\"/@snapshots\"" | sudo tee -a "$DEFAULT_CONF" > /dev/null
+sudo sed -i '/^MAX_SNAPSHOT_ENTRIES=/d' "$DEFAULT_CONF"
+echo "MAX_SNAPSHOT_ENTRIES=auto" | sudo tee -a "$DEFAULT_CONF" > /dev/null
 
 # --- 5. Dynamic Kernel Parameter Extraction ---
 # We grab everything currently in /proc/cmdline
