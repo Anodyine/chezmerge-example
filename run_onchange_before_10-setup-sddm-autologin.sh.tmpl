@@ -1,5 +1,8 @@
 #!/bin/bash
 # SDDM ML4W Theme: Host-Aware Implementation
+# chezmoi managed dependency hashes:
+# main-qml={{ include "files/ml4w-sddm/Main.qml" | sha256sum }}
+# login-screen-qml={{ include "files/ml4w-sddm/components/LoginScreen.qml" | sha256sum }}
 set -euo pipefail
 
 TARGET_DIR="/etc/sddm.conf.d"
@@ -7,7 +10,11 @@ AUTOLOGIN_FILE="$TARGET_DIR/autologin.conf"
 GENERAL_FILE="$TARGET_DIR/10-ml4w-general.conf"
 THEME_FILE="$TARGET_DIR/10-ml4w-theme.conf"
 THEME_DIR="/usr/share/sddm/themes/ml4w"
+THEME_CONFIG="$THEME_DIR/configs/ml4w.conf"
 TMP_DIR="${HOME}/.cache/ml4w-tmp/ml4w-sddm"
+PRIMARY_COLOR_FILE="${HOME}/.config/ml4w/colors/primary"
+SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+OVERRIDE_DIR="$SOURCE_DIR/files/ml4w-sddm"
 HOSTNAME="{{ .chezmoi.hostname }}"
 
 echo "🚀 Configuring SDDM to use the ML4W theme for $HOSTNAME..."
@@ -27,8 +34,37 @@ install_ml4w_theme() {
     rm -rf "$TMP_DIR"
 }
 
+apply_ml4w_overrides() {
+    if [ ! -d "$OVERRIDE_DIR" ]; then
+        return
+    fi
+
+    if [ -f "$OVERRIDE_DIR/Main.qml" ]; then
+        sudo cp -f "$OVERRIDE_DIR/Main.qml" "$THEME_DIR/Main.qml"
+    fi
+
+    if [ -f "$OVERRIDE_DIR/components/LoginScreen.qml" ]; then
+        sudo mkdir -p "$THEME_DIR/components"
+        sudo cp -f "$OVERRIDE_DIR/components/LoginScreen.qml" "$THEME_DIR/components/LoginScreen.qml"
+    fi
+}
+
 sudo mkdir -p "$TARGET_DIR"
 install_ml4w_theme
+apply_ml4w_overrides
+
+if [ -f "$PRIMARY_COLOR_FILE" ] && [ -f "$THEME_CONFIG" ]; then
+    PRIMARY_COLOR=$(cat "$PRIMARY_COLOR_FILE")
+    sudo sed -i "s/^primary-color = .*/primary-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^color = .*/color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^content-color = .*/content-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^active-content-color = .*/active-content-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^normal-color = .*/normal-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^warning-color = .*/warning-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^error-color = .*/error-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^key-content-color = .*/key-content-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^selection-content-color = .*/selection-content-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
+fi
 
 GREETER_ENV="QML2_IMPORT_PATH=/usr/share/sddm/themes/ml4w/components/,QT_IM_MODULE=qtvirtualkeyboard"
 {{ if eq .chezmoi.hostname "arch-surface" -}}
