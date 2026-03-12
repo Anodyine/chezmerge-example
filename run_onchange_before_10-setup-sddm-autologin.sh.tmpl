@@ -1,66 +1,65 @@
 #!/bin/bash
-# SDDM Autologin: Host-Aware Implementation
-set -uo pipefail
+# SDDM ML4W Theme: Host-Aware Implementation
+set -euo pipefail
 
 TARGET_DIR="/etc/sddm.conf.d"
 AUTOLOGIN_FILE="$TARGET_DIR/autologin.conf"
-GENERAL_FILE="$TARGET_DIR/general.conf"
+GENERAL_FILE="$TARGET_DIR/10-ml4w-general.conf"
+THEME_FILE="$TARGET_DIR/10-ml4w-theme.conf"
+THEME_DIR="/usr/share/sddm/themes/ml4w"
+TMP_DIR="${HOME}/.cache/ml4w-tmp/ml4w-sddm"
 HOSTNAME="{{ .chezmoi.hostname }}"
 
-echo "🚀 Configuring SDDM Autologin for $HOSTNAME..."
+echo "🚀 Configuring SDDM to use the ML4W theme for $HOSTNAME..."
 
-# 1. Ensure directory exists
-sudo mkdir -p "$TARGET_DIR"
-
-# 2. Host-Specific Session Detection
-# On the Surface, we want the stability of uwsm.
-# On everything else, we go back to your "known good" hyprland session.
-{{ if eq .chezmoi.hostname "arch-surface" -}}
-    # Check for uwsm first for Surface stability, fall back to hyprland
-    if [ -f "/usr/share/wayland-sessions/hyprland-uwsm.desktop" ]; then
-        SESSION="hyprland-uwsm"
-    else
-        SESSION="hyprland"
+install_ml4w_theme() {
+    if [ -d "$THEME_DIR" ]; then
+        echo "ℹ️ ML4W SDDM theme already present."
+        return
     fi
-{{ else -}}
-    # For desktop/server, we use your original working session
-    SESSION="hyprland"
+
+    echo "📥 Installing ML4W SDDM theme..."
+    rm -rf "$TMP_DIR"
+    mkdir -p "$(dirname "$TMP_DIR")"
+    git clone --depth 1 https://github.com/mylinuxforwork/ml4w-sddm "$TMP_DIR"
+    sudo mkdir -p "$THEME_DIR"
+    sudo cp -rf "$TMP_DIR"/. "$THEME_DIR"/
+    rm -rf "$TMP_DIR"
+}
+
+sudo mkdir -p "$TARGET_DIR"
+install_ml4w_theme
+
+GREETER_ENV="QML2_IMPORT_PATH=/usr/share/sddm/themes/ml4w/components/,QT_IM_MODULE=qtvirtualkeyboard"
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+GREETER_ENV="QML2_IMPORT_PATH=/usr/share/sddm/themes/ml4w/components/,QT_IM_MODULE=qtvirtualkeyboard,QT_WAYLAND_SHELL_INTEGRATION=layer-shell"
 {{ end -}}
 
-# 3. Create temp files to avoid pipe issues with sudo
-TEMP_AUTO=$(mktemp)
+TEMP_THEME=$(mktemp)
 TEMP_GEN=$(mktemp)
 
-# Autologin Config (Note: NO .desktop suffix)
-cat <<EOF > "$TEMP_AUTO"
-[Autologin]
-User={{ .chezmoi.username }}
-Session=$SESSION
-Relogin=false
+cat <<EOF > "$TEMP_THEME"
+[Theme]
+Current=ml4w
 EOF
 
-# General Config 
-# (Only applied if it's the Surface to ensure it forces Wayland for the touch screen)
+cat <<EOF > "$TEMP_GEN"
+[General]
+InputMethod=qtvirtualkeyboard
+GreeterEnvironment=$GREETER_ENV
 {{ if eq .chezmoi.hostname "arch-surface" -}}
-cat <<EOF > "$TEMP_GEN"
-[General]
 DisplayServer=wayland
-GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
-InputMethod=
-EOF
-{{ else -}}
-# On other machines, we make sure general.conf is minimal or empty
-# to avoid interfering with existing GPU drivers.
-cat <<EOF > "$TEMP_GEN"
-[General]
-InputMethod=
-EOF
 {{ end -}}
+EOF
 
-# 4. Move files into place and enforce root ownership
-sudo mv "$TEMP_AUTO" "$AUTOLOGIN_FILE"
+if [ -f "$AUTOLOGIN_FILE" ]; then
+    sudo rm -f "$AUTOLOGIN_FILE"
+    echo "🔒 Removed SDDM autologin override."
+fi
+
+sudo mv "$TEMP_THEME" "$THEME_FILE"
 sudo mv "$TEMP_GEN" "$GENERAL_FILE"
-sudo chown root:root "$AUTOLOGIN_FILE" "$GENERAL_FILE"
-sudo chmod 644 "$AUTOLOGIN_FILE" "$GENERAL_FILE"
+sudo chown root:root "$THEME_FILE" "$GENERAL_FILE"
+sudo chmod 644 "$THEME_FILE" "$GENERAL_FILE"
 
-echo "✅ SDDM configured (Session: $SESSION)."
+echo "✅ SDDM configured to show the ML4W login screen."
