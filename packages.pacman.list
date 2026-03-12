@@ -121,6 +121,7 @@ man-db
 htop                    # ADDED: (from pkgs.sh)
 vim                     # ADDED: (from pkgs.sh)
 neovim                  # ADDED: (from pkgs.sh)
+bat
 
 # --- Virtualization & Dev ---
 podman
