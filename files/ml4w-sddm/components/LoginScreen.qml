@@ -474,15 +474,8 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 22
-                color: "#575b75"
-                opacity: 0.22
-            }
-
-            Rectangle {
-                anchors.fill: parent
-                radius: 22
-                color: "#575b75"
-                opacity: 0.08
+                color: "#414877"
+                opacity: 0.5
             }
         }
 
