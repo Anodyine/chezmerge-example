@@ -1,0 +1,25 @@
+fun center_x (image) {
+  return Window.GetWidth () / 2 - image.GetWidth () / 2;
+}
+
+fun center_y (image, y) {
+  return y - image.GetHeight () / 2;
+}
+
+Window.SetBackgroundTopColor (0.055, 0.110, 0.210);
+Window.SetBackgroundBottomColor (0.035, 0.067, 0.133);
+
+logo_image = Image ("logo.png");
+logo_sprite = Sprite (logo_image);
+logo_sprite.SetX (center_x (logo_image));
+logo_sprite.SetY (center_y (logo_image, Window.GetHeight () * 0.42));
+
+title_image = Image.Text ("Arch Linux", 0.91, 0.95, 0.98, 1.0, "Sans 24");
+title_sprite = Sprite (title_image);
+title_sprite.SetX (center_x (title_image));
+title_sprite.SetY (center_y (title_image, Window.GetHeight () * 0.64));
+
+subtitle_image = Image.Text ("Loading system...", 0.63, 0.75, 0.88, 1.0, "Sans 12");
+subtitle_sprite = Sprite (subtitle_image);
+subtitle_sprite.SetX (center_x (subtitle_image));
+subtitle_sprite.SetY (center_y (subtitle_image, Window.GetHeight () * 0.71));

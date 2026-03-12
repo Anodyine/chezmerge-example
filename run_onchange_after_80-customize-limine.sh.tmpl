@@ -25,7 +25,7 @@ sudo sed -i '/^TARGET_OS_NAME=/d' "$DEFAULT_CONF"
 echo "TARGET_OS_NAME=\"$TARGET_OS_NAME\"" | sudo tee -a "$DEFAULT_CONF" >/dev/null
 
 if command -v limine-mkinitcpio >/dev/null; then
-    sudo limine-mkinitcpio
+    sudo limine-mkinitcpio -P
 else
     sudo limine-update
 fi

@@ -89,7 +89,7 @@ if [ -f "$LIMINE_DEFAULT" ]; then
         info "Regenerating Limine config..."
         
         if command -v limine-mkinitcpio >/dev/null; then
-            sudo limine-mkinitcpio
+            sudo limine-mkinitcpio -P
         elif command -v limine-update >/dev/null; then
             sudo limine-update
         else

@@ -123,6 +123,7 @@ vim                     # ADDED: (from pkgs.sh)
 neovim                  # ADDED: (from pkgs.sh)
 bat
 limine                  # Explicit so chezmoi package sync upgrades the bootloader itself
+plymouth                # Boot splash for Limine + mkinitcpio systems
 
 # --- Virtualization & Dev ---
 podman

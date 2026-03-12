@@ -63,6 +63,12 @@ echo "ROOT_SNAPSHOTS_PATH=\"/@snapshots\"" | sudo tee -a "$DEFAULT_CONF" > /dev/
 # --- 5. Dynamic Kernel Parameter Extraction ---
 # We grab everything currently in /proc/cmdline
 CURRENT_CMDLINE=$(cat /proc/cmdline | sed -E 's/(BOOT_IMAGE|initrd|pci|pcie_aspm|intel_iommu|usb4_port_reset)[^ ]* ?//g')
+for arg in quiet splash loglevel=3 vt.global_cursor_default=0; do
+    if [[ " $CURRENT_CMDLINE " != *" $arg "* ]]; then
+        CURRENT_CMDLINE="$CURRENT_CMDLINE $arg"
+    fi
+done
+CURRENT_CMDLINE="$(echo "$CURRENT_CMDLINE" | xargs)"
 
 # Clear existing line before re-adding
 sudo sed -i '/^KERNEL_CMDLINE/d' "$DEFAULT_CONF"
@@ -97,7 +103,7 @@ if ! grep -q "btrfs-overlayfs" /etc/mkinitcpio.conf; then
     sudo sed -i "s/filesystems/filesystems btrfs-overlayfs/" /etc/mkinitcpio.conf
 fi
 
-sudo limine-mkinitcpio
+sudo limine-mkinitcpio -P
 
 {{ if eq .chezmoi.hostname "arch-surface" -}}
 #echo "🔧 Forcing Timeout to 0 to fix freeze when my usb hubs are connected..."
