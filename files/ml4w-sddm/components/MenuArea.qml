@@ -474,14 +474,14 @@ Item {
                 anchors.fill: parent
                 radius: 18
                 color: "#575b75"
-                opacity: 0.30
+                opacity: 0.50
             }
 
             Rectangle {
                 anchors.fill: parent
                 radius: 18
                 color: "#575b75"
-                opacity: 0.12
+                opacity: 0.22
             }
         }
 
@@ -556,14 +556,14 @@ Item {
                 anchors.fill: parent
                 radius: 18
                 color: "#575b75"
-                opacity: 0.30
+                opacity: 0.50
             }
 
             Rectangle {
                 anchors.fill: parent
                 radius: 18
                 color: "#575b75"
-                opacity: 0.12
+                opacity: 0.22
             }
         }
 
@@ -638,14 +638,14 @@ Item {
                 anchors.fill: parent
                 radius: 18
                 color: "#575b75"
-                opacity: 0.30
+                opacity: 0.50
             }
 
             Rectangle {
                 anchors.fill: parent
                 radius: 18
                 color: "#575b75"
-                opacity: 0.12
+                opacity: 0.22
             }
         }
 
