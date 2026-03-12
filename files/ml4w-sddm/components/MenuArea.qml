@@ -462,7 +462,7 @@ Item {
             blurMax: 48
             blur: 1.0
             brightness: -0.04
-            saturation: -0.35
+            saturation: -0.5
         }
 
         Item {
@@ -544,7 +544,7 @@ Item {
             blurMax: 48
             blur: 1.0
             brightness: -0.04
-            saturation: -0.35
+            saturation: -0.5
         }
 
         Item {
@@ -626,7 +626,7 @@ Item {
             blurMax: 48
             blur: 1.0
             brightness: -0.04
-            saturation: -0.35
+            saturation: -0.5
         }
 
         Item {
