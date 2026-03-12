@@ -16,12 +16,15 @@ GENERAL_FILE="$TARGET_DIR/10-ml4w-general.conf"
 THEME_FILE="$TARGET_DIR/10-ml4w-theme.conf"
 THEME_DIR="/usr/share/sddm/themes/ml4w"
 THEME_CONFIG="$THEME_DIR/configs/ml4w.conf"
+THEME_BACKGROUNDS_DIR="$THEME_DIR/backgrounds"
 TMP_DIR="${HOME}/.cache/ml4w-tmp/ml4w-sddm"
 PRIMARY_COLOR_FILE="${HOME}/.config/ml4w/colors/primary"
 KITTY_FOREGROUND_COLOR="#eaf2f1"
 SOURCE_DIR="{{ .chezmoi.sourceDir }}"
 OVERRIDE_DIR="$SOURCE_DIR/files/ml4w-sddm"
 HOSTNAME="{{ .chezmoi.hostname }}"
+SDDM_BACKGROUND_SOURCE="$SOURCE_DIR/wallpapers/Fantasy-Waterfall.png"
+SDDM_BACKGROUND_NAME="Fantasy-Waterfall.png"
 
 echo "🚀 Configuring SDDM to use the ML4W theme for $HOSTNAME..."
 
@@ -55,9 +58,24 @@ apply_ml4w_overrides() {
     fi
 }
 
+configure_sddm_background() {
+    if [ ! -f "$SDDM_BACKGROUND_SOURCE" ]; then
+        echo "⚠️ SDDM background source not found: $SDDM_BACKGROUND_SOURCE"
+        return
+    fi
+
+    sudo mkdir -p "$THEME_BACKGROUNDS_DIR"
+    sudo cp -f "$SDDM_BACKGROUND_SOURCE" "$THEME_BACKGROUNDS_DIR/$SDDM_BACKGROUND_NAME"
+
+    if [ -f "$THEME_CONFIG" ]; then
+        sudo sed -i "s/^background = .*/background = \"$SDDM_BACKGROUND_NAME\"/" "$THEME_CONFIG"
+    fi
+}
+
 sudo mkdir -p "$TARGET_DIR"
 install_ml4w_theme
 apply_ml4w_overrides
+configure_sddm_background
 
 if [ -f "$PRIMARY_COLOR_FILE" ] && [ -f "$THEME_CONFIG" ]; then
     PRIMARY_COLOR=$(cat "$PRIMARY_COLOR_FILE")
