@@ -171,6 +171,7 @@ install_vscode_extensions_from_list() {
 # -------------------------
 setup_animations() {
   local vscode_dir="/opt/visual-studio-code"
+  local stable_script="$HOME/.config/Code/animations/updateHandler.js"
   
   if [[ -d "$vscode_dir" ]]; then
     info "Setting permissions for VS Code injection..."
@@ -183,13 +184,11 @@ setup_animations() {
 
   if [[ -n "$anim_script" ]]; then
     info "Found animations script at: $anim_script"
-    
-    local settings_file="$HOME/.config/Code/User/settings.json"
-    if [[ -f "$settings_file" ]]; then
-      sed -i 's|"file:///home/anodyine/.vscode/extensions/brandonkirbyson.vscode-animations-[^/"]*/dist/updateHandler.js"|"file://'"$anim_script"'"|g' "$settings_file"
-    fi
 
-    info "To finish activation, open VS Code and run: 'Reload Custom CSS and JS'"
+    mkdir -p "$(dirname "$stable_script")"
+    ln -sfn "$anim_script" "$stable_script"
+
+    info "To finish activation, restart VS Code if it is open."
   else
     warn "Animations script not found. You may need to run 'Animations: Install Animations' inside VS Code once."
   fi

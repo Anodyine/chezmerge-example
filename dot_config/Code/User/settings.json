@@ -15,12 +15,12 @@
   "editor.cursorBlinking": "expand",
   "editor.cursorSmoothCaretAnimation": "on",
   "vscode_custom_css.imports": [
-    "file:///home/anodyine/.vscode/extensions/brandonkirbyson.vscode-animations-2.0.7/dist/updateHandler.js"
+    "file:///home/anodyine/.config/Code/animations/updateHandler.js"
   ],
   "animations.Enabled": true,
   "animations.Install-Method": "Custom CSS and JS",
   "animations.CursorAnimationOptions": {
-    "TrailLength": 5 
+    "TrailLength": 15 
   },
   "animations.CursorAnimation": true,
   "terminal.integrated.cursorBlinking": true,
