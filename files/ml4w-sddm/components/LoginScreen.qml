@@ -429,6 +429,7 @@ Item {
         property int horizontalPadding: 63
         property int topPadding: 73
         property int bottomPadding: 63
+        property real minimumWidth: 560 * Config.generalScale
         property real contentWidth: Config.loginAreaPosition === "left" || Config.loginAreaPosition === "right"
             ? loginContainer.width
             : Math.max(
@@ -436,12 +437,14 @@ Item {
                 loginLayout.width,
                 noUsersLoginArea.visible ? noUsersLoginArea.width : 0
             )
+        property real baseWidth: contentWidth + (horizontalPadding * 2)
+        property real extraWidthOffset: Math.max(0, minimumWidth - baseWidth) / 2
         visible: loginScreen.opacity > 0 && loginContainer.visible
         x: (Config.loginAreaPosition === "left" || Config.loginAreaPosition === "right"
             ? loginContainer.x
-            : loginContainer.x + ((loginContainer.width - contentWidth) / 2)) - horizontalPadding
+            : loginContainer.x + ((loginContainer.width - contentWidth) / 2)) - horizontalPadding - extraWidthOffset
         y: loginContainer.y - topPadding
-        width: contentWidth + (horizontalPadding * 2)
+        width: Math.max(baseWidth, minimumWidth)
         height: loginContainer.height + topPadding + bottomPadding
         clip: true
 

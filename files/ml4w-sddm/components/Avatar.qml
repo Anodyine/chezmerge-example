@@ -138,6 +138,8 @@ Rectangle {
             property bool shouldShow: enabled && avatar.showTooltip || (enabled && mouseArea.isCursorInsideAvatar() && avatar.tooltipText !== "")
             visible: shouldShow
             delay: 300
+            x: (mouseArea.width - implicitWidth) / 2
+            y: -implicitHeight - (15 * Config.generalScale)
             contentItem: Text {
                 font.family: Config.tooltipsFontFamily
                 font.pixelSize: Config.tooltipsFontSize * Config.generalScale
