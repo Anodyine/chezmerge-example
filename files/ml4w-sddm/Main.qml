@@ -214,6 +214,7 @@ Item {
                 anchors.fill: parent
                 focus: root.state === "lockState"
                 enabled: root.state === "lockState"
+                backgroundSource: backgroundEffect
                 onLoginRequested: {
                     root.state = "loginState";
                     loginScreen.resetFocus();

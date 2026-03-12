@@ -2,6 +2,7 @@
 # SDDM ML4W Theme: Host-Aware Implementation
 # chezmoi managed dependency hashes:
 # main-qml={{ include "files/ml4w-sddm/Main.qml" | sha256sum }}
+# lock-screen-qml={{ include "files/ml4w-sddm/components/LockScreen.qml" | sha256sum }}
 # login-screen-qml={{ include "files/ml4w-sddm/components/LoginScreen.qml" | sha256sum }}
 # input-qml={{ include "files/ml4w-sddm/components/Input.qml" | sha256sum }}
 # avatar-qml={{ include "files/ml4w-sddm/components/Avatar.qml" | sha256sum }}
@@ -23,7 +24,7 @@ KITTY_FOREGROUND_COLOR="#eaf2f1"
 SOURCE_DIR="{{ .chezmoi.sourceDir }}"
 OVERRIDE_DIR="$SOURCE_DIR/files/ml4w-sddm"
 HOSTNAME="{{ .chezmoi.hostname }}"
-SDDM_BACKGROUND_NAME="Anime-City-Night.png"
+SDDM_BACKGROUND_NAME="Fantasy-Landscape1.png"
 SDDM_BACKGROUND_SOURCE="$SOURCE_DIR/wallpapers/$SDDM_BACKGROUND_NAME"
 
 echo "🚀 Configuring SDDM to use the ML4W theme for $HOSTNAME..."
