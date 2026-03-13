@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+exec bash "{{ .chezmoi.sourceDir }}/scripts/setup-profile.sh" \
+  --non-interactive \
+  --real-name-from-git \
+  --avatar "{{ .chezmoi.sourceDir }}/avatars/rendering-bee-anime-character.jpg"
