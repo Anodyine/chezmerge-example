@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# {{ if eq .chezmoi.hostname "ml-server" }}
+
+set -euo pipefail
+
+config_dir="${HOME}/.config/OpenRGB"
+config_file="${config_dir}/OpenRGB.json"
+profile_name="exit-profile"
+
+# Hash: {{ include "dot_config/OpenRGB/exit-profile.orp" | sha256sum }}
+
+if ! command -v jq >/dev/null 2>&1; then
+    echo "jq is required to configure the OpenRGB exit profile."
+    exit 1
+fi
+
+if [ ! -f "${config_file}" ]; then
+    echo "Skipping OpenRGB exit profile setup; ${config_file} does not exist yet."
+    exit 0
+fi
+
+tmp_file=$(mktemp)
+trap 'rm -f "${tmp_file}"' EXIT
+
+jq --arg profile_name "${profile_name}" '
+    .UserInterface.autoload_profiles.exit_profile.enabled = true
+    | .UserInterface.autoload_profiles.exit_profile.name = $profile_name
+' "${config_file}" > "${tmp_file}"
+
+install -m 0644 "${tmp_file}" "${config_file}"
+
+echo "Configured OpenRGB exit profile '${profile_name}'."
+
+# {{ end }}
