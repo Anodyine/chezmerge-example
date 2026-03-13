@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+detect_smbus_driver() {
+    if grep -q 'AuthenticAMD' /proc/cpuinfo; then
+        printf '%s\n' 'i2c-piix4'
+    elif grep -q 'GenuineIntel' /proc/cpuinfo; then
+        printf '%s\n' 'i2c-i801'
+    else
+        return 1
+    fi
+}
+
+driver=$(detect_smbus_driver || true)
+module=${driver//-/_}
+
+for _ in $(seq 1 30); do
+    driver_ready=1
+    if [ -n "${module}" ] && ! lsmod | grep -q "^${module} "; then
+        driver_ready=0
+    fi
+
+    if ls /dev/i2c-* >/dev/null 2>&1 && [ "$driver_ready" -eq 1 ]; then
+        exec /usr/bin/openrgb "$@"
+    fi
+
+    sleep 1
+done
+
+exec /usr/bin/openrgb "$@"

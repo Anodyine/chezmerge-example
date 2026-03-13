@@ -26,7 +26,9 @@ exec-once = hypridle
 exec-once = sh -c 'command -v nm-applet >/dev/null 2>&1 && ! pgrep -x nm-applet >/dev/null && nm-applet --indicator'
 
 {{ if eq .chezmoi.hostname "ml-server" -}}
-exec-once = /usr/bin/openrgb --startminimized --profile test
+exec-once = ~/.local/bin/openrgb-launch --startminimized --profile test
+{{ else if eq .chezmoi.hostname "ml-server-2" -}}
+exec-once = ~/.local/bin/openrgb-launch --startminimized --profile ml-server-2
 {{ end }}
 
 # Load cliphist history
