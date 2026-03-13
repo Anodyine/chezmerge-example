@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import QtQuick.VirtualKeyboard
 import QtQuick.VirtualKeyboard.Settings
 
@@ -8,6 +9,10 @@ InputPanel {
     property real edgeMargin: 24 * Config.generalScale
     property real panelGap: 24 * Config.generalScale
     property real reservedBottomSpace: (Config.menuAreaButtonsMarginBottom + (Config.menuAreaButtonsSize * Config.generalScale) + panelGap)
+    property real glassBlurMax: 32
+    property real glassBlurOpacity: 0.42
+    property real glassBrightness: -0.04
+    property real glassSaturation: -0.45
     property string pos: Config.virtualKeyboardPosition
     property point loginLayoutPosition: loginContainer && loginLayout ? loginContainer.mapToGlobal(loginLayout.x, loginLayout.y) : Qt.point(0, 0)
     property bool vKeyboardMoved: false
@@ -97,6 +102,38 @@ InputPanel {
         enabled: Config.enableAnimations
         NumberAnimation {
             duration: 250
+        }
+    }
+
+    Item {
+        id: keyboardGlassLayer
+        z: -1
+        anchors.fill: parent
+        clip: true
+        visible: inputPanel.visible && loginScreen && loginScreen.backgroundSource
+
+        property var backdropTarget: loginScreen ? loginScreen.backgroundSource : null
+        property point backdropPos: backdropTarget ? inputPanel.mapToItem(backdropTarget, 0, 0) : Qt.point(0, 0)
+
+        ShaderEffectSource {
+            id: keyboardGlassSource
+            anchors.fill: parent
+            sourceItem: keyboardGlassLayer.backdropTarget
+            live: true
+            hideSource: false
+            sourceRect: Qt.rect(keyboardGlassLayer.backdropPos.x, keyboardGlassLayer.backdropPos.y, inputPanel.width, inputPanel.height)
+        }
+
+        MultiEffect {
+            anchors.fill: parent
+            source: keyboardGlassSource
+            autoPaddingEnabled: false
+            blurEnabled: !!keyboardGlassSource.sourceItem
+            blurMax: inputPanel.glassBlurMax
+            blur: 1.0
+            opacity: inputPanel.glassBlurOpacity
+            brightness: inputPanel.glassBrightness
+            saturation: inputPanel.glassSaturation
         }
     }
 

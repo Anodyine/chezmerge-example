@@ -32,6 +32,9 @@ fi
 primarycolor=$(cat ~/.config/ml4w/colors/primary)
 onsurfacecolor=$(cat ~/.config/ml4w/colors/onsurface)
 onprimarycolor=$(cat ~/.config/ml4w/colors/onprimary)
+VKB_KEY_DARKER_COLOR="#4d5c7c"
+VKB_KEY_LIGHTER_COLOR="#5d6d90"
+VKB_KEY_HELD_COLOR="#566789"
 
 # --- 3. HELPER FUNCTIONS ---
 
@@ -133,10 +136,10 @@ apply_theme () {
     if [ -f /usr/share/sddm/themes/ml4w/configs/ml4w.conf ]; then
         sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-color = .*/background-color = "#333751"/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
         sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-opacity = .*/background-opacity = 0.0/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
-        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-color = .*/key-color = "#575b75"/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
-        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-opacity = .*/key-opacity = 0.78/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
-        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-background-color = .*/key-active-background-color = "#6d7392"/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
-        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-opacity = .*/key-active-opacity = 0.92/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i "/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-color = .*/key-color = \"$VKB_KEY_DARKER_COLOR\"/}" /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-opacity = .*/key-opacity = 0.76/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i "/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-background-color = .*/key-active-background-color = \"$VKB_KEY_LIGHTER_COLOR\"/}" /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-opacity = .*/key-active-opacity = 0.88/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
         sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^border-size = .*/border-size = 0/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
     fi
 
@@ -144,6 +147,7 @@ apply_theme () {
         sudo sed -i 's/^    property color popupBackgroundColor: .*/    property color popupBackgroundColor: normalKeyBackgroundColor/' /usr/share/sddm/themes/ml4w/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml
         sudo sed -i 's/^    property color popupBorderColor: .*/    property color popupBorderColor: highlightedKeyBackgroundColor/' /usr/share/sddm/themes/ml4w/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml
         sudo sed -i 's/^    property color popupHighlightColor: .*/    property color popupHighlightColor: highlightedKeyBackgroundColor/' /usr/share/sddm/themes/ml4w/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml
+        sudo perl -0pi -e 's/State \{\n\s+name: "pressed"\n\s+when: control\.pressed\n\s+PropertyChanges \{\n\s+target: keyBg\n(?:\s+color: .*\n)?\s+opacity: [0-9.]+\n\s+\}\n\s+PropertyChanges \{\n\s+target: keyText\n\s+opacity: [0-9.]+\n\s+\}\n\s+\}/State {\n                name: "pressed"\n                when: control.pressed\n                PropertyChanges {\n                    target: keyBg\n                    color: "'"$VKB_KEY_HELD_COLOR"'"\n                    opacity: 0.72\n                }\n                PropertyChanges {\n                    target: keyText\n                    opacity: 0.90\n                }\n            }/s' /usr/share/sddm/themes/ml4w/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml
     fi
 }
 

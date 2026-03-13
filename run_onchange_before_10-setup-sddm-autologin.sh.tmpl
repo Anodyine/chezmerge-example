@@ -10,6 +10,7 @@
 # icon-button-qml={{ include "files/ml4w-sddm/components/IconButton.qml" | sha256sum }}
 # menu-area-qml={{ include "files/ml4w-sddm/components/MenuArea.qml" | sha256sum }}
 # cvkeyboard-qml={{ include "files/ml4w-sddm/components/CVKeyboard.qml" | sha256sum }}
+# vkeyboard-style-qml={{ include "files/ml4w-sddm/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml" | sha256sum }}
 set -euo pipefail
 
 TARGET_DIR="/etc/sddm.conf.d"
@@ -23,6 +24,9 @@ THEME_BACKGROUNDS_DIR="$THEME_DIR/backgrounds"
 TMP_DIR="${HOME}/.cache/ml4w-tmp/ml4w-sddm"
 PRIMARY_COLOR_FILE="${HOME}/.config/ml4w/colors/primary"
 KITTY_FOREGROUND_COLOR="#eaf2f1"
+VKB_KEY_DARKER_COLOR="#4d5c7c"
+VKB_KEY_LIGHTER_COLOR="#5d6d90"
+VKB_KEY_HELD_COLOR="#566789"
 SOURCE_DIR="{{ .chezmoi.sourceDir }}"
 OVERRIDE_DIR="$SOURCE_DIR/files/ml4w-sddm"
 HOSTNAME="{{ .chezmoi.hostname }}"
@@ -59,6 +63,11 @@ apply_ml4w_overrides() {
         sudo mkdir -p "$THEME_DIR/components"
         sudo cp -f "$OVERRIDE_DIR/components/"*.qml "$THEME_DIR/components/"
     fi
+
+    if [ -d "$OVERRIDE_DIR/components/QtQuick" ]; then
+        sudo mkdir -p "$THEME_DIR/components/QtQuick"
+        sudo cp -rf "$OVERRIDE_DIR/components/QtQuick/." "$THEME_DIR/components/QtQuick/"
+    fi
 }
 
 configure_sddm_background() {
@@ -94,10 +103,10 @@ if [ -f "$PRIMARY_COLOR_FILE" ] && [ -f "$THEME_CONFIG" ]; then
     sudo sed -i "s/^selection-content-color = .*/selection-content-color = \"$KITTY_FOREGROUND_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-color = .*/background-color = "#333751"/}' "$THEME_CONFIG"
     sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-opacity = .*/background-opacity = 0.0/}' "$THEME_CONFIG"
-    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-color = .*/key-color = "#575b75"/}' "$THEME_CONFIG"
-    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-opacity = .*/key-opacity = 0.78/}' "$THEME_CONFIG"
-    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-background-color = .*/key-active-background-color = "#6d7392"/}' "$THEME_CONFIG"
-    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-opacity = .*/key-active-opacity = 0.92/}' "$THEME_CONFIG"
+    sudo sed -i "/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-color = .*/key-color = \"$VKB_KEY_DARKER_COLOR\"/}" "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-opacity = .*/key-opacity = 0.76/}' "$THEME_CONFIG"
+    sudo sed -i "/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-background-color = .*/key-active-background-color = \"$VKB_KEY_LIGHTER_COLOR\"/}" "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-opacity = .*/key-active-opacity = 0.88/}' "$THEME_CONFIG"
     sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^border-size = .*/border-size = 0/}' "$THEME_CONFIG"
 fi
 
@@ -105,6 +114,7 @@ if [ -f "$THEME_VKB_STYLE" ]; then
     sudo sed -i 's/^    property color popupBackgroundColor: .*/    property color popupBackgroundColor: normalKeyBackgroundColor/' "$THEME_VKB_STYLE"
     sudo sed -i 's/^    property color popupBorderColor: .*/    property color popupBorderColor: highlightedKeyBackgroundColor/' "$THEME_VKB_STYLE"
     sudo sed -i 's/^    property color popupHighlightColor: .*/    property color popupHighlightColor: highlightedKeyBackgroundColor/' "$THEME_VKB_STYLE"
+    sudo perl -0pi -e 's/State \{\n\s+name: "pressed"\n\s+when: control\.pressed\n\s+PropertyChanges \{\n\s+target: keyBg\n(?:\s+color: .*\n)?\s+opacity: [0-9.]+\n\s+\}\n\s+PropertyChanges \{\n\s+target: keyText\n\s+opacity: [0-9.]+\n\s+\}\n\s+\}/State {\n                name: "pressed"\n                when: control.pressed\n                PropertyChanges {\n                    target: keyBg\n                    color: "'"$VKB_KEY_HELD_COLOR"'"\n                    opacity: 0.72\n                }\n                PropertyChanges {\n                    target: keyText\n                    opacity: 0.90\n                }\n            }/s' "$THEME_VKB_STYLE"
 fi
 
 GREETER_ENV="QML2_IMPORT_PATH=/usr/share/sddm/themes/ml4w/components/,QT_IM_MODULE=qtvirtualkeyboard"
