@@ -5,6 +5,9 @@ import QtQuick.Effects
 Item {
     id: menuArea
     anchors.fill: parent
+    property color glassSurfaceColor: "#575b75"
+    property real glassSurfaceOpacity: 0.62
+    property real popupVerticalLift: 14 * Config.generalScale
 
     Component {
         id: sessionMenuComponent
@@ -43,8 +46,8 @@ Item {
                 parent: sessionButton
                 padding: Config.menuAreaPopupsPadding
                 background: Rectangle {
-                    color: Config.menuAreaPopupsBackgroundColor
-                    opacity: Config.menuAreaPopupsBackgroundOpacity
+                    color: menuArea.glassSurfaceColor
+                    opacity: menuArea.glassSurfaceOpacity
                     radius: Config.menuAreaButtonsBorderRadius * Config.generalScale
 
                     Rectangle {
@@ -155,8 +158,8 @@ Item {
                 parent: layoutButton
                 padding: Config.menuAreaPopupsPadding
                 background: Rectangle {
-                    color: Config.menuAreaPopupsBackgroundColor
-                    opacity: Config.menuAreaPopupsBackgroundOpacity
+                    color: menuArea.glassSurfaceColor
+                    opacity: menuArea.glassSurfaceOpacity
                     radius: Config.menuAreaButtonsBorderRadius * Config.generalScale
 
                     Rectangle {
@@ -270,8 +273,8 @@ Item {
                 id: popup
                 parent: powerButton
                 background: Rectangle {
-                    color: Config.menuAreaPopupsBackgroundColor
-                    opacity: Config.menuAreaPopupsBackgroundOpacity
+                    color: menuArea.glassSurfaceColor
+                    opacity: menuArea.glassSurfaceOpacity
                     radius: Config.menuAreaButtonsBorderRadius * Config.generalScale
 
                     Rectangle {
@@ -748,7 +751,7 @@ Item {
         var y = 0;
 
         if (direction === "up") {
-            y = -popup.height - popupMargin;
+            y = -popup.height - popupMargin - popupVerticalLift;
             if (align === "start") {
                 x = 0;
             } else if (align === "end") {

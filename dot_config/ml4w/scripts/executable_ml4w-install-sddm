@@ -129,6 +129,22 @@ apply_theme () {
         echo -e "\n[General]\nInputMethod=qtvirtualkeyboard" | sudo tee -a /etc/sddm.conf
         echo -e "GreeterEnvironment=QML2_IMPORT_PATH=/usr/share/sddm/themes/ml4w/components/,QT_IM_MODULE=qtvirtualkeyboard" | sudo tee -a /etc/sddm.conf
     fi
+
+    if [ -f /usr/share/sddm/themes/ml4w/configs/ml4w.conf ]; then
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-color = .*/background-color = "#333751"/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-opacity = .*/background-opacity = 0.0/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-color = .*/key-color = "#575b75"/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-opacity = .*/key-opacity = 0.78/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-background-color = .*/key-active-background-color = "#6d7392"/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-opacity = .*/key-active-opacity = 0.92/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+        sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^border-size = .*/border-size = 0/}' /usr/share/sddm/themes/ml4w/configs/ml4w.conf
+    fi
+
+    if [ -f /usr/share/sddm/themes/ml4w/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml ]; then
+        sudo sed -i 's/^    property color popupBackgroundColor: .*/    property color popupBackgroundColor: normalKeyBackgroundColor/' /usr/share/sddm/themes/ml4w/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml
+        sudo sed -i 's/^    property color popupBorderColor: .*/    property color popupBorderColor: highlightedKeyBackgroundColor/' /usr/share/sddm/themes/ml4w/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml
+        sudo sed -i 's/^    property color popupHighlightColor: .*/    property color popupHighlightColor: highlightedKeyBackgroundColor/' /usr/share/sddm/themes/ml4w/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml
+    fi
 }
 
 copy_wallpaper_to_sddm() {

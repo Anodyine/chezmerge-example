@@ -9,6 +9,7 @@
 # spinner-qml={{ include "files/ml4w-sddm/components/Spinner.qml" | sha256sum }}
 # icon-button-qml={{ include "files/ml4w-sddm/components/IconButton.qml" | sha256sum }}
 # menu-area-qml={{ include "files/ml4w-sddm/components/MenuArea.qml" | sha256sum }}
+# cvkeyboard-qml={{ include "files/ml4w-sddm/components/CVKeyboard.qml" | sha256sum }}
 set -euo pipefail
 
 TARGET_DIR="/etc/sddm.conf.d"
@@ -17,6 +18,7 @@ GENERAL_FILE="$TARGET_DIR/10-ml4w-general.conf"
 THEME_FILE="$TARGET_DIR/10-ml4w-theme.conf"
 THEME_DIR="/usr/share/sddm/themes/ml4w"
 THEME_CONFIG="$THEME_DIR/configs/ml4w.conf"
+THEME_VKB_STYLE="$THEME_DIR/components/QtQuick/VirtualKeyboard/Styles/vkeyboardStyle/style.qml"
 THEME_BACKGROUNDS_DIR="$THEME_DIR/backgrounds"
 TMP_DIR="${HOME}/.cache/ml4w-tmp/ml4w-sddm"
 PRIMARY_COLOR_FILE="${HOME}/.config/ml4w/colors/primary"
@@ -88,7 +90,21 @@ if [ -f "$PRIMARY_COLOR_FILE" ] && [ -f "$THEME_CONFIG" ]; then
     sudo sed -i "s/^warning-color = .*/warning-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i "s/^error-color = .*/error-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i "s/^key-content-color = .*/key-content-color = \"$KITTY_FOREGROUND_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i "s/^selection-background-color = .*/selection-background-color = \"$PRIMARY_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i "s/^selection-content-color = .*/selection-content-color = \"$KITTY_FOREGROUND_COLOR\"/" "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-color = .*/background-color = "#333751"/}' "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-opacity = .*/background-opacity = 0.0/}' "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-color = .*/key-color = "#575b75"/}' "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-opacity = .*/key-opacity = 0.78/}' "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-background-color = .*/key-active-background-color = "#6d7392"/}' "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-opacity = .*/key-active-opacity = 0.92/}' "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^border-size = .*/border-size = 0/}' "$THEME_CONFIG"
+fi
+
+if [ -f "$THEME_VKB_STYLE" ]; then
+    sudo sed -i 's/^    property color popupBackgroundColor: .*/    property color popupBackgroundColor: normalKeyBackgroundColor/' "$THEME_VKB_STYLE"
+    sudo sed -i 's/^    property color popupBorderColor: .*/    property color popupBorderColor: highlightedKeyBackgroundColor/' "$THEME_VKB_STYLE"
+    sudo sed -i 's/^    property color popupHighlightColor: .*/    property color popupHighlightColor: highlightedKeyBackgroundColor/' "$THEME_VKB_STYLE"
 fi
 
 GREETER_ENV="QML2_IMPORT_PATH=/usr/share/sddm/themes/ml4w/components/,QT_IM_MODULE=qtvirtualkeyboard"

@@ -30,6 +30,7 @@ Item {
     property int borderSize: 0
     property color borderColor: isActive ? iconButton.activeContentColor : iconButton.contentColor
     property int preferredWidth: -1
+    property real tooltipVerticalOffset: 15 * Config.generalScale
 
     width: preferredWidth !== -1 ? (preferredWidth * Config.generalScale) : buttonContentRow.width
     height: iconSize * 2 * Config.generalScale
@@ -154,6 +155,8 @@ Item {
             property bool shouldShow: enabled && mouseArea.containsMouse && iconButton.tooltipText !== "" || enabled && iconButton.focus && iconButton.tooltipText !== ""
             visible: shouldShow
             delay: 300
+            x: (mouseArea.width - implicitWidth) / 2
+            y: -implicitHeight - iconButton.tooltipVerticalOffset
 
             contentItem: Text {
                 font.family: Config.tooltipsFontFamily
@@ -162,12 +165,7 @@ Item {
                 color: "#eaf2f1"
             }
 
-            background: Rectangle {
-                color: Config.tooltipsBackgroundColor
-                opacity: Config.tooltipsBackgroundOpacity
-                border.width: 0
-                radius: Config.tooltipsBorderRadius * Config.generalScale
-            }
+            background: TooltipBackground {}
         }
     }
 

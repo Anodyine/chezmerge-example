@@ -146,12 +146,7 @@ Rectangle {
                 text: avatar.tooltipText
                 color: "#eaf2f1"
             }
-            background: Rectangle {
-                color: Config.tooltipsBackgroundColor
-                opacity: Config.tooltipsBackgroundOpacity
-                border.width: 0
-                radius: Config.tooltipsBorderRadius * Config.generalScale
-            }
+            background: TooltipBackground {}
         }
     }
 }
