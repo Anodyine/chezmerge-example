@@ -2,4 +2,7 @@
 
 set -euo pipefail
 
-exec bash "{{ .chezmoi.sourceDir }}/scripts/setup-profile.sh"
+# Manual profile setup is intentionally not run automatically on apply.
+# Run this explicitly when you want to change git/profile settings:
+#   bash "{{ .chezmoi.sourceDir }}/scripts/setup-profile.sh"
+:

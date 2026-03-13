@@ -8,6 +8,9 @@ AVATAR_DIR="$SOURCE_DIR/avatars"
 SDDM_FACE_DIR="/usr/share/sddm/faces"
 SDDM_FACE_PATH="$SDDM_FACE_DIR/$USER.face.icon"
 SDDM_FACE_BACKUP="$SDDM_FACE_DIR/$USER.face.icon.bkp"
+NON_INTERACTIVE=0
+AUTO_AVATAR=""
+AUTO_REAL_NAME_FROM_GIT=0
 
 info() {
     echo ":: $*"
@@ -128,11 +131,52 @@ install_sddm_avatar() {
     rm -f "$temp_face"
 }
 
+usage() {
+    cat <<'EOF'
+Usage: setup-profile.sh [options]
+
+Options:
+  --avatar PATH               Install PATH as the SDDM avatar.
+  --real-name-from-git        Set the system real name from git user.name.
+  --non-interactive           Do not prompt; only apply explicit options.
+  --help                      Show this help.
+EOF
+}
+
+parse_args() {
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --avatar)
+                [ "$#" -ge 2 ] || { echo "Missing value for --avatar" >&2; exit 1; }
+                AUTO_AVATAR="$2"
+                shift 2
+                ;;
+            --real-name-from-git)
+                AUTO_REAL_NAME_FROM_GIT=1
+                shift
+                ;;
+            --non-interactive)
+                NON_INTERACTIVE=1
+                shift
+                ;;
+            --help)
+                usage
+                exit 0
+                ;;
+            *)
+                echo "Unknown option: $1" >&2
+                usage >&2
+                exit 1
+                ;;
+        esac
+    done
+}
+
 main() {
     info "Checking Git configuration..."
 
     GIT_NAME="$(git config --global user.name || true)"
-    if [ -z "$GIT_NAME" ]; then
+    if [ -z "$GIT_NAME" ] && [ "$NON_INTERACTIVE" -eq 0 ]; then
         info "Git user.name not set."
         GIT_NAME=$(prompt_input "Enter your Git Name (for commits)" "John Doe")
         if [ -n "$GIT_NAME" ]; then
@@ -142,7 +186,7 @@ main() {
     fi
 
     GIT_EMAIL="$(git config --global user.email || true)"
-    if [ -z "$GIT_EMAIL" ]; then
+    if [ -z "$GIT_EMAIL" ] && [ "$NON_INTERACTIVE" -eq 0 ]; then
         info "Git user.email not set."
         GIT_EMAIL=$(prompt_input "Enter your Git Email" "john@example.com")
         if [ -n "$GIT_EMAIL" ]; then
@@ -152,14 +196,26 @@ main() {
     fi
 
     REAL_NAME="$(get_real_name)"
-    if [ -n "$GIT_NAME" ] && [ "$REAL_NAME" != "$GIT_NAME" ]; then
+    if [ "$AUTO_REAL_NAME_FROM_GIT" -eq 1 ] && [ -n "$GIT_NAME" ] && [ "$REAL_NAME" != "$GIT_NAME" ]; then
+        set_real_name "$GIT_NAME"
+        info "System profile full name updated to '$GIT_NAME'"
+    elif [ "$NON_INTERACTIVE" -eq 0 ] && [ -n "$GIT_NAME" ] && [ "$REAL_NAME" != "$GIT_NAME" ]; then
         if confirm "Set your system profile full name to '$GIT_NAME'?"; then
             set_real_name "$GIT_NAME"
             info "System profile full name updated to '$GIT_NAME'"
         fi
     fi
 
-    if [ -d "$AVATAR_DIR" ] && [ -n "$(find "$AVATAR_DIR" -maxdepth 1 -type f | head -n 1)" ]; then
+    if [ -n "$AUTO_AVATAR" ]; then
+        AVATAR_PATH="$(resolve_avatar_path "$AUTO_AVATAR" || true)"
+        if [ -n "$AVATAR_PATH" ] && [ -f "$AVATAR_PATH" ]; then
+            info "Installing avatar from $AVATAR_PATH"
+            install_sddm_avatar "$AVATAR_PATH"
+            info "SDDM avatar installed at $SDDM_FACE_PATH"
+        else
+            info "Configured avatar '$AUTO_AVATAR' was not found."
+        fi
+    elif [ "$NON_INTERACTIVE" -eq 0 ] && [ -d "$AVATAR_DIR" ] && [ -n "$(find "$AVATAR_DIR" -maxdepth 1 -type f | head -n 1)" ]; then
         if confirm "Set your SDDM profile image now?"; then
             info "Avatar choices live in $AVATAR_DIR"
             open_avatar_folder
@@ -188,4 +244,5 @@ main() {
     info "Git/profile configuration complete."
 }
 
+parse_args "$@"
 main "$@"
