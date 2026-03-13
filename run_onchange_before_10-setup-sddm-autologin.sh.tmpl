@@ -94,17 +94,20 @@ if [ -f "$PRIMARY_COLOR_FILE" ] && [ -f "$THEME_CONFIG" ]; then
     sudo sed -i "s/^selection-content-color = .*/selection-content-color = \"$KITTY_FOREGROUND_COLOR\"/" "$THEME_CONFIG"
     sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-color = .*/background-color = "#333751"/}' "$THEME_CONFIG"
     sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^background-opacity = .*/background-opacity = 0.0/}' "$THEME_CONFIG"
-    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-color = .*/key-color = "#575b75"/}' "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-color = .*/key-color = "#333751"/}' "$THEME_CONFIG"
     sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-opacity = .*/key-opacity = 0.78/}' "$THEME_CONFIG"
-    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-background-color = .*/key-active-background-color = "#6d7392"/}' "$THEME_CONFIG"
+    sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-background-color = .*/key-active-background-color = "#333751"/}' "$THEME_CONFIG"
     sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^key-active-opacity = .*/key-active-opacity = 0.92/}' "$THEME_CONFIG"
     sudo sed -i '/^\[LoginScreen.VirtualKeyboard\]/,/^\[/{s/^border-size = .*/border-size = 0/}' "$THEME_CONFIG"
 fi
 
 if [ -f "$THEME_VKB_STYLE" ]; then
+    sudo sed -i 's/^    property color capsLockKeyAccentColor: .*/    property color capsLockKeyAccentColor: normalKeyBackgroundColor/' "$THEME_VKB_STYLE"
+    sudo sed -i 's/^    property color modeKeyAccentColor: .*/    property color modeKeyAccentColor: normalKeyBackgroundColor/' "$THEME_VKB_STYLE"
     sudo sed -i 's/^    property color popupBackgroundColor: .*/    property color popupBackgroundColor: normalKeyBackgroundColor/' "$THEME_VKB_STYLE"
     sudo sed -i 's/^    property color popupBorderColor: .*/    property color popupBorderColor: highlightedKeyBackgroundColor/' "$THEME_VKB_STYLE"
     sudo sed -i 's/^    property color popupHighlightColor: .*/    property color popupHighlightColor: highlightedKeyBackgroundColor/' "$THEME_VKB_STYLE"
+    sudo sed -i 's/^                    color: \"#566789\"/                    color: normalKeyBackgroundColor/' "$THEME_VKB_STYLE"
 fi
 
 GREETER_ENV="QML2_IMPORT_PATH=/usr/share/sddm/themes/ml4w/components/,QT_IM_MODULE=qtvirtualkeyboard"
