@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MASTER_CONF="/boot/limine.conf"
+TARGETS=(
+    "/boot/EFI/limine/limine.conf"
+    "/boot/EFI/arch-limine/limine.conf"
+)
+
+info() { printf "[INFO] %s\n" "$*"; }
+
+[ -f "$MASTER_CONF" ] || exit 0
+
+for target in "${TARGETS[@]}"; do
+    if [ ! -e "$target" ]; then
+        continue
+    fi
+
+    if sudo cmp -s "$MASTER_CONF" "$target"; then
+        continue
+    fi
+
+    sudo install -m 0644 "$MASTER_CONF" "$target"
+    info "Synced $target from $MASTER_CONF"
+done
