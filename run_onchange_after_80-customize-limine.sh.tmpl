@@ -67,7 +67,7 @@ rewrite_limine_theme_block() {
                 print "term_palette: " term_palette
                 print "term_palette_bright: " term_palette_bright
             }
-            /^interface_branding:/ || /^#interface_branding:/ || /^interface_branding_color:/ || /^#interface_branding_color:/ || /^backdrop:/ || /^term_background:/ || /^term_foreground:/ || /^term_background_bright:/ || /^term_foreground_bright:/ || /^term_palette:/ || /^term_palette_bright:/ {
+            /^interface_branding:/ || /^#interface_branding:/ || /^interface_branding_color:/ || /^#interface_branding_color:/ || /^interface_resolution:/ || /^#interface_resolution:/ || /^interface_help_hidden:/ || /^#interface_help_hidden:/ || /^backdrop:/ || /^term_background:/ || /^term_foreground:/ || /^term_background_bright:/ || /^term_foreground_bright:/ || /^term_palette:/ || /^term_palette_bright:/ {
                 next
             }
             !os_entry_renamed && /^\/\+?Arch Linux( \(linux\))?$/ {

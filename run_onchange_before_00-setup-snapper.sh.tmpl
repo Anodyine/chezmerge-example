@@ -3,7 +3,34 @@
 set -euo pipefail
 
 HOSTNAME="{{ .chezmoi.hostname }}"
+SNAPPER_NUMBER_LIMIT="20"
+SNAPPER_NUMBER_LIMIT_IMPORTANT="4"
 echo "🚀 Starting Boot/Snapshot Config for $HOSTNAME..."
+
+set_config_value() {
+    local file="$1"
+    local key="$2"
+    local value="$3"
+    local tmp_file
+
+    tmp_file="$(mktemp)"
+    sudo awk -v key="$key" -v value="$value" '
+        BEGIN { replaced = 0 }
+        $0 ~ ("^" key "=") {
+            print key "=" value
+            replaced = 1
+            next
+        }
+        { print }
+        END {
+            if (!replaced) {
+                print key "=" value
+            }
+        }
+    ' "$file" > "$tmp_file"
+    sudo install -m 0644 "$tmp_file" "$file"
+    rm -f "$tmp_file"
+}
 
 # --- 1. Helper Detection & Auto-Install (RESTORED FROM OLD) ---
 if command -v paru &> /dev/null; then
@@ -43,8 +70,8 @@ fi
 echo "⚖️ Setting Snapper retention limits..."
 sudo snapper -c root set-config \
     NUMBER_CLEANUP="yes" \
-    NUMBER_LIMIT="20" \
-    NUMBER_LIMIT_IMPORTANT="4" \
+    NUMBER_LIMIT="$SNAPPER_NUMBER_LIMIT" \
+    NUMBER_LIMIT_IMPORTANT="$SNAPPER_NUMBER_LIMIT_IMPORTANT" \
     EMPTY_PRE_POST_CLEANUP="yes" \
     TIMELINE_LIMIT_HOURLY="10" \
     TIMELINE_LIMIT_DAILY="21" \
@@ -55,16 +82,21 @@ sudo snapper -c root set-config \
 # --- 4. Central Configuration (Host-Aware) ---
 DEFAULT_CONF="/etc/default/limine"
 MASTER_CONF="/boot/limine.conf"
+SYNC_CONF="/etc/limine-snapper-sync.conf"
 
 sudo touch "$DEFAULT_CONF"
 
 # Standard Global Vars
-sudo sed -i '/^LIMINE_CONFIG=/d' "$DEFAULT_CONF"
-echo "LIMINE_CONFIG=\"$MASTER_CONF\"" | sudo tee -a "$DEFAULT_CONF" > /dev/null
-sudo sed -i '/^ROOT_SNAPSHOTS_PATH=/d' "$DEFAULT_CONF"
-echo "ROOT_SNAPSHOTS_PATH=\"/@snapshots\"" | sudo tee -a "$DEFAULT_CONF" > /dev/null
-sudo sed -i '/^MAX_SNAPSHOT_ENTRIES=/d' "$DEFAULT_CONF"
-echo "MAX_SNAPSHOT_ENTRIES=auto" | sudo tee -a "$DEFAULT_CONF" > /dev/null
+set_config_value "$DEFAULT_CONF" "LIMINE_CONFIG" "\"$MASTER_CONF\""
+set_config_value "$DEFAULT_CONF" "ROOT_SNAPSHOTS_PATH" "\"/@snapshots\""
+set_config_value "$DEFAULT_CONF" "MAX_SNAPSHOT_ENTRIES" "$SNAPPER_NUMBER_LIMIT"
+
+if [ -f "$SYNC_CONF" ]; then
+    sudo sed -E -i 's/^(COMMANDS_AFTER_SAVE="[^"]*")MAX_SNAPSHOT_ENTRIES=.*/\1/' "$SYNC_CONF"
+    sudo sed -E -i 's/^(COMMANDS_AFTER_SAVE="[^"]*")ROOT_SNAPSHOTS_PATH=.*/\1/' "$SYNC_CONF"
+    set_config_value "$SYNC_CONF" "MAX_SNAPSHOT_ENTRIES" "$SNAPPER_NUMBER_LIMIT"
+    set_config_value "$SYNC_CONF" "ROOT_SNAPSHOTS_PATH" "\"/@snapshots\""
+fi
 
 # --- 5. Dynamic Kernel Parameter Extraction ---
 # We grab everything currently in /proc/cmdline
@@ -100,7 +132,7 @@ done
 # --- 7. Standard Host Configuration ---
 echo "KERNEL_CMDLINE[default]=\"$CURRENT_CMDLINE\"" | sudo tee -a "$DEFAULT_CONF" >/dev/null
 sudo sed -i "/^TIMEOUT=/d" "$DEFAULT_CONF"
-echo "TIMEOUT=5" | sudo tee -a "$DEFAULT_CONF" > /dev/null
+set_config_value "$DEFAULT_CONF" "TIMEOUT" "5"
 {{ end -}}
 
 # --- 7. Finalize & Sync ---
