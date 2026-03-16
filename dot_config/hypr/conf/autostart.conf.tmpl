@@ -43,7 +43,7 @@ exec-once = ~/.config/hypr/scripts/cleanup.sh
 # Load configuration from ML4W Hyprland Settings App
 exec = ~/.config/com.ml4w.hyprlandsettings/hyprctl.sh
 
-exec-once = systemctl --user start hyprland-session.target
+exec-once = ~/.config/hypr/scripts/start-sunshine.sh
 
 {{ if not (eq .chezmoi.hostname "arch-surface") -}}
 exec-once = ~/.config/hypr/conf/synology-drive-start.sh
