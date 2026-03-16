@@ -26,6 +26,8 @@ KITTY_FOREGROUND_COLOR="#eaf2f1"
 SOURCE_DIR="{{ .chezmoi.sourceDir }}"
 OVERRIDE_DIR="$SOURCE_DIR/files/ml4w-sddm"
 HOSTNAME="{{ .chezmoi.hostname }}"
+AUTOLOGIN_USER="{{ .chezmoi.username }}"
+AUTOLOGIN_SESSION="hyprland"
 SDDM_BACKGROUND_NAME="Bonsai-Plant.png"
 SDDM_BACKGROUND_SOURCE="$SOURCE_DIR/wallpapers/$SDDM_BACKGROUND_NAME"
 
@@ -136,6 +138,22 @@ if [ -f "$AUTOLOGIN_FILE" ]; then
     sudo rm -f "$AUTOLOGIN_FILE"
     echo "🔒 Removed SDDM autologin override."
 fi
+
+{{ if eq .chezmoi.hostname "ml-server" -}}
+TEMP_AUTOLOGIN=$(mktemp)
+
+cat <<EOF > "$TEMP_AUTOLOGIN"
+[Autologin]
+User=$AUTOLOGIN_USER
+Session=$AUTOLOGIN_SESSION
+Relogin=false
+EOF
+
+sudo mv "$TEMP_AUTOLOGIN" "$AUTOLOGIN_FILE"
+sudo chown root:root "$AUTOLOGIN_FILE"
+sudo chmod 644 "$AUTOLOGIN_FILE"
+echo "🔓 Enabled SDDM autologin on startup for $HOSTNAME."
+{{ end -}}
 
 sudo mv "$TEMP_THEME" "$THEME_FILE"
 sudo mv "$TEMP_GEN" "$GENERAL_FILE"
