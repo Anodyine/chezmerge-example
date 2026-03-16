@@ -139,7 +139,7 @@ if [ -f "$AUTOLOGIN_FILE" ]; then
     echo "🔒 Removed SDDM autologin override."
 fi
 
-{{ if eq .chezmoi.hostname "ml-server" -}}
+{{ if or (eq .chezmoi.hostname "ml-server") (eq .chezmoi.hostname "ml-server-2") -}}
 TEMP_AUTOLOGIN=$(mktemp)
 
 cat <<EOF > "$TEMP_AUTOLOGIN"
