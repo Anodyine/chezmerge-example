@@ -3,7 +3,7 @@
 # This script runs the official ML4W setup script to catch any missing dependencies
 # or system configurations (fonts, cursors, etc.) that aren't in standard packages.
 
-ML4W_SETUP_DIR="{{ .chezmoi.sourceDir }}/.external_sources/dotfiles/setup"
+ML4W_SETUP_DIR="{{ .chezmoi.sourceDir }}/.chezmerge-upstream/setup"
 
 echo ":: ML4W CHEZMOI HOOK ::"
 echo ":: Checking for ML4W Setup Script at: $ML4W_SETUP_DIR"
@@ -19,7 +19,7 @@ if [ -d "$ML4W_SETUP_DIR" ]; then
     # We try to pipe 'yes' to it, but 'gum' is interactive-only. 
     # If this hangs, you must press ENTER in the terminal running chezmoi.
     
-    # Invoke via bash to avoid mutating mode bits in the cached upstream repo.
+    # Invoke via bash to avoid mutating mode bits in the tracked upstream repo.
     bash ./setup-arch.sh
 else
     echo ":: ERROR: ML4W setup directory not found. Did the submodules clone correctly?"

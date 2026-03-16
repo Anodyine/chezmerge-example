@@ -1,32 +1,28 @@
 #!/usr/bin/env bash
 
-# This script hydrates the .external_sources cache so that
-# the ML4W setup scripts (Step 30) have access to the upstream repo.
+# Ensure the tracked chezmerge submodule is initialized before
+# any hooks attempt to use upstream ML4W files.
 
-# We use the same path structure as config.py in the merge tool
-EXTERNAL_DIR="{{ .chezmoi.sourceDir }}/.external_sources"
-ML4W_REPO_DIR="$EXTERNAL_DIR/dotfiles"
-ML4W_URL="https://github.com/mylinuxforwork/dotfiles.git"
+SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+ML4W_REPO_DIR="$SOURCE_DIR/.chezmerge-upstream"
 
-echo ":: EXTERNAL SOURCES HOOK ::"
+echo ":: CHEZMERGE SUBMODULE HOOK ::"
 
-# Check if the repo exists. If not, clone it.
-if [ ! -d "$ML4W_REPO_DIR/.git" ]; then
-    echo ":: ML4W cache missing. Cloning from upstream..."
-    
-    # Ensure parent dir exists
-    mkdir -p "$EXTERNAL_DIR"
-    
-    # Clone freshly (matches logic of merge-assistant.py when cache is missing)
-    git clone "$ML4W_URL" "$ML4W_REPO_DIR"
-    
-    echo ":: Clone complete."
-else
-    echo ":: ML4W cache found. Skipping clone."
+if [ ! -d "$SOURCE_DIR/.git" ]; then
+    echo ":: ERROR: $SOURCE_DIR is not a git repository."
+    exit 1
 fi
 
-# The cache repo should not report mode-only changes on systems with
+if [ -d "$ML4W_REPO_DIR/.git" ] || [ -f "$ML4W_REPO_DIR/.git" ]; then
+    echo ":: ML4W submodule already initialized. Skipping."
+else
+    echo ":: Initializing .chezmerge-upstream submodule..."
+    git -C "$SOURCE_DIR" submodule update --init --recursive .chezmerge-upstream
+    echo ":: Submodule ready."
+fi
+
+# The upstream repo should not report mode-only changes on systems with
 # different executable bit behavior.
-if [ -d "$ML4W_REPO_DIR/.git" ]; then
+if [ -d "$ML4W_REPO_DIR/.git" ] || [ -f "$ML4W_REPO_DIR/.git" ]; then
     git -C "$ML4W_REPO_DIR" config core.filemode false
 fi
