@@ -62,14 +62,13 @@ detect_workbench_html() {
 
 ensure_vscode_permissions() {
   local vscode_dir="$1"
-  local owner
-  owner="$(stat -c '%U' "$vscode_dir")"
+  local workbench_html="$2"
 
-  if [[ "$owner" == "$(id -un)" ]]; then
+  if [[ -w "$workbench_html" ]]; then
     return 0
   fi
 
-  info "VS Code files under $vscode_dir are owned by $owner; fixing ownership for animation injection."
+  info "VS Code workbench is not writable; fixing ownership under $vscode_dir for animation injection."
   sudo chown -R "$(id -un):$(id -gn)" "$vscode_dir"
 }
 
@@ -130,15 +129,14 @@ main() {
     exit 0
   fi
 
-  ensure_vscode_permissions "$vscode_dir"
-  ensure_animation_symlink "$anim_script"
-
   local workbench_html
   if ! workbench_html="$(detect_workbench_html "$vscode_dir")"; then
     warn "VS Code workbench HTML not found; skipping animations patch."
     exit 0
   fi
 
+  ensure_vscode_permissions "$vscode_dir" "$workbench_html"
+  ensure_animation_symlink "$anim_script"
   ensure_workbench_patch "$workbench_html"
   info "Animations prerequisite repair complete. Restart VS Code if it is open."
 }
