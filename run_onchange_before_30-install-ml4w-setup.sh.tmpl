@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+# This hook reruns the upstream ML4W Arch setup when the upstream setup logic
+# shipped in .chezmerge-upstream changes. It intentionally follows the
+# upstream flow more closely than our local package hook so new setup
+# requirements like quickshell get installed when Stephan adds them.
+#
+# Trigger hashes:
+# preflight-arch={{ include ".chezmerge-upstream/setup/preflight-arch.sh" | sha256sum }}
+# post-arch={{ include ".chezmerge-upstream/setup/post-arch.sh" | sha256sum }}
+# packages-arch={{ include ".chezmerge-upstream/setup/dependencies/packages-arch" | sha256sum }}
+# migrate={{ include ".chezmerge-upstream/setup/migrate.sh" | sha256sum }}
+# prebuilt={{ include ".chezmerge-upstream/setup/_prebuilt.sh" | sha256sum }}
+# cursors={{ include ".chezmerge-upstream/setup/_cursors.sh" | sha256sum }}
+# fonts={{ include ".chezmerge-upstream/setup/_fonts.sh" | sha256sum }}
+# icons={{ include ".chezmerge-upstream/setup/_icons.sh" | sha256sum }}
+
+set -euo pipefail
+
+ML4W_SETUP_DIR="{{ .chezmoi.sourceDir }}/.chezmerge-upstream/setup"
+LEGACY_SETUP="$ML4W_SETUP_DIR/setup-arch.sh"
+PREFLIGHT_ARCH="$ML4W_SETUP_DIR/preflight-arch.sh"
+POST_ARCH_SETUP="$ML4W_SETUP_DIR/post-arch.sh"
+PACKAGES_ARCH="$ML4W_SETUP_DIR/dependencies/packages-arch"
+
+info() { printf ":: %s\n" "$*"; }
+warn() { printf ":: WARN: %s\n" "$*" >&2; }
+
+read_list() {
+    local file="$1"
+    [ -f "$file" ] || return 1
+    sed -e 's/#.*$//' -e 's/[[:space:]]*$//' -e 's/^[[:space:]]*//' -e '/^$/d' "$file"
+}
+
+install_upstream_arch_packages() {
+    local -a pacman_pkgs=()
+    local -a aur_pkgs=()
+    local aur_helper=""
+    local pkg=""
+
+    if [ ! -f "$PACKAGES_ARCH" ]; then
+        warn "No upstream Arch dependency list found at $PACKAGES_ARCH"
+        return 0
+    fi
+
+    while IFS= read -r pkg; do
+        [ -n "$pkg" ] || continue
+        if pacman -Si "$pkg" >/dev/null 2>&1; then
+            pacman_pkgs+=("$pkg")
+        else
+            aur_pkgs+=("$pkg")
+        fi
+    done < <(read_list "$PACKAGES_ARCH")
+
+    if [ "${#pacman_pkgs[@]}" -gt 0 ]; then
+        info "Installing upstream Arch packages via pacman..."
+        sudo pacman -S --needed --noconfirm "${pacman_pkgs[@]}"
+    fi
+
+    if [ "${#aur_pkgs[@]}" -gt 0 ]; then
+        if command -v yay >/dev/null 2>&1; then
+            aur_helper="yay"
+        elif command -v paru >/dev/null 2>&1; then
+            aur_helper="paru"
+        fi
+
+        if [ -n "$aur_helper" ]; then
+            info "Installing upstream AUR packages via $aur_helper..."
+            "$aur_helper" -S --needed --noconfirm "${aur_pkgs[@]}"
+        else
+            warn "Skipping upstream AUR packages because no AUR helper is installed: ${aur_pkgs[*]}"
+        fi
+    fi
+}
+
+info "ML4W CHEZMOI HOOK"
+info "Checking for ML4W setup scripts at: $ML4W_SETUP_DIR"
+
+if [ -x "$LEGACY_SETUP" ]; then
+    info "Starting legacy ML4W setup..."
+    cd "$ML4W_SETUP_DIR" || exit 1
+    bash ./setup-arch.sh
+    exit 0
+fi
+
+if [ -x "$PREFLIGHT_ARCH" ] && [ -x "$POST_ARCH_SETUP" ]; then
+    info "Starting full ML4W Arch setup refresh..."
+    cd "$ML4W_SETUP_DIR" || exit 1
+    bash ./preflight-arch.sh
+    install_upstream_arch_packages
+    bash ./post-arch.sh
+    exit 0
+fi
+
+echo ":: ERROR: No supported ML4W setup entrypoint found."
+echo ":: Expected one of:"
+echo "::   $LEGACY_SETUP"
+echo "::   $PREFLIGHT_ARCH + $POST_ARCH_SETUP"
+exit 1
