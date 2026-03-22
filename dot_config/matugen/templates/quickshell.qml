@@ -12,7 +12,7 @@ QtObject {
     readonly property color waybarBorder: primary
     readonly property color waybarBorderMuted: on_primary
     readonly property color waybarForeground: on_surface
-    readonly property real waybarBorderWidth: 2
+    readonly property real waybarBorderWidth: 1
     readonly property real waybarRadius: 12
     readonly property real waybarOpacity: 0.8
     readonly property real quickshellPanelOpacity: 0.94

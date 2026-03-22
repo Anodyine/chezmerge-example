@@ -113,7 +113,7 @@ QtObject {
 
 		readonly property color waybarForeground: on_surface
 
-		readonly property real waybarBorderWidth: 2
+		readonly property real waybarBorderWidth: 1
 
 		readonly property real waybarRadius: 12
 

@@ -121,7 +121,7 @@ Item {
                             implicitHeight: root.workspaceImplicitHeight
                             color: hoveredWhileDragging ? hoveredWorkspaceColor : defaultWorkspaceColor
                             radius: Appearance.rounding.screenRounding * root.scale
-                            border.width: 2
+                            border.width: 1
                             border.color: hoveredWhileDragging ? hoveredBorderColor : "transparent"
 
                             StyledText {
@@ -319,7 +319,7 @@ Item {
                 height: root.workspaceImplicitHeight
                 color: "transparent"
                 radius: Appearance.rounding.screenRounding * root.scale
-                border.width: 2
+                border.width: 1
                 border.color: root.activeBorderColor
                 Behavior on x {
                     animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
