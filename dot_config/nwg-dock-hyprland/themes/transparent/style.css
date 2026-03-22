@@ -39,7 +39,7 @@ button {
 }
 
 button:hover {
-	background-color: @primary_container;
+	background-color: @selection;
 	border-radius: 10px;
 }
 
