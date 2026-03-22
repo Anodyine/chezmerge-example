@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Codex
+Comment=OpenAI Codex Desktop
+Exec=env ELECTRON_OZONE_PLATFORM_HINT=auto codex-desktop --enable-features=UseOzonePlatform,WaylandPerWindowScaling,WaylandLinuxDrmSyncobj --ozone-platform=wayland %U
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/codex-desktop.png
+StartupWMClass=Codex
+Categories=Development;
+MimeType=x-scheme-handler/codex;
