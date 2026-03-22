@@ -1,4 +1,4 @@
 source = ~/.config/hypr/conf/workspaces/default.conf
-{{ if eq .chezmoi.hostname "arch-lenovo" -}}
+{{ if or (eq .chezmoi.hostname "arch-lenovo") (eq .chezmoi.hostname "ml-server") (eq .chezmoi.hostname "ml-server-1") -}}
 source = ~/.config/hypr/conf/workspaces/left_desk.conf
 {{ end }}
