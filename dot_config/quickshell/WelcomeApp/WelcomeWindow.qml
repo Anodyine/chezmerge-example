@@ -54,7 +54,7 @@ FloatingWindow {
             font.family: theme.fontFamily
             font.pixelSize: 14
             // Invert colors on hover
-            color: control.highlighted ? theme.background : theme.primary 
+            color: control.highlighted ? theme.background : theme.on_background
             verticalAlignment: Text.AlignVCenter
         }
         
@@ -233,7 +233,7 @@ FloatingWindow {
                     text: menuBarItem.text
                     font.pixelSize: 14
                     font.family: theme.fontFamily
-                    color: theme.on_primary
+                    color: theme.background
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -319,7 +319,7 @@ FloatingWindow {
                             contentItem: Text {
                                 text: parent.text
                                 font.family: theme.fontFamily
-                                color: theme.primary
+                                color: theme.on_background
                                 padding: 8
                             }
                         }
@@ -341,7 +341,7 @@ FloatingWindow {
                             contentItem: Text {
                                 text: parent.text
                                 font.family: theme.fontFamily
-                                color: theme.primary
+                                color: theme.on_background
                                 padding: 8
                             }
                         }
@@ -404,7 +404,7 @@ FloatingWindow {
                         contentItem: Text {
                             text: parent.text
                             font.family: theme.fontFamily
-                            color: theme.primary
+                            color: theme.on_background
                             padding: 8
                         }
                     }
@@ -423,7 +423,7 @@ FloatingWindow {
 
                     Text {
                         text: qsTr("Show on Startup")
-                        color: theme.primary
+                        color: theme.on_background
                         font.family: theme.fontFamily
                         font.pixelSize: 14
                         Layout.alignment: Qt.AlignVCenter

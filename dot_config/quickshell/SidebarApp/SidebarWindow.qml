@@ -102,7 +102,7 @@ PanelWindow {
             text: control.text
             font.family: theme.fontFamily
             font.pixelSize: 14
-            color: control.highlighted ? theme.background : theme.primary 
+            color: control.highlighted ? theme.background : theme.on_background
             verticalAlignment: Text.AlignVCenter
         }
         background: Rectangle {
@@ -125,7 +125,7 @@ PanelWindow {
             text: parent.text
             font.family: theme.fontFamily
             font.pixelSize: 16
-            color: theme.primary
+            color: theme.on_background
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             padding: 8
@@ -162,7 +162,7 @@ PanelWindow {
         font.family: "monospace"
         background: Rectangle { color: "transparent" }
         contentItem: Text { 
-            text: parent.text; color: theme.primary; font.pixelSize: 18; 
+            text: parent.text; color: theme.on_background; font.pixelSize: 18; 
             verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter
         }
     }
@@ -175,7 +175,7 @@ PanelWindow {
         font.family: "monospace"
         background: Rectangle { color: "transparent" }
         contentItem: Text { 
-            text: parent.text; color: theme.primary; font.pixelSize: 18; 
+            text: parent.text; color: theme.on_background; font.pixelSize: 18; 
             verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter
         }
     }
@@ -188,11 +188,11 @@ PanelWindow {
 
         Rectangle {
             anchors.fill: parent
-            color: theme ? theme.background : "#1e1e2e"
-            border.color: theme ? theme.primary : "#89b4fa"
-            border.width: 2
-            radius: 10
-            opacity: 0.9 // Only the background is transparent
+            color: theme ? theme.waybarBackground : "#1e1e2e"
+            border.color: theme ? theme.waybarBorder : "#89b4fa"
+            border.width: theme ? theme.waybarBorderWidth : 2
+            radius: theme ? theme.waybarRadius : 10
+            opacity: theme ? theme.quickshellPanelOpacity : 0.94
         }
 
         ColumnLayout {
@@ -310,7 +310,7 @@ PanelWindow {
 
                             Text {
                                 text: "" // Speaker icon
-                                color: theme.primary
+                                color: theme.on_background
                                 font.family: "monospace"
                                 font.pixelSize: 18
                                 Layout.alignment: Qt.AlignVCenter
@@ -378,7 +378,7 @@ PanelWindow {
 
                             Text {
                                 text: "" // Sun/Brightness icon
-                                color: theme.primary
+                                color: theme.on_background
                                 font.family: "monospace"
                                 font.pixelSize: 18
                                 Layout.alignment: Qt.AlignVCenter
@@ -509,7 +509,7 @@ PanelWindow {
                                         text: "󰝚" // Music note icon (fallback)
                                         font.family: "monospace"
                                         font.pixelSize: 32
-                                        color: theme.primary
+                                        color: theme.on_background
                                         visible: !player.trackArtUrl || player.trackArtUrl === ""
                                     }
                                 }
@@ -523,7 +523,7 @@ PanelWindow {
                                     Text {
                                         Layout.fillWidth: true
                                         text: player.trackTitle ? player.trackTitle : (player.identity ? player.identity : "No Media Playing")
-                                        color: theme.primary
+                                        color: theme.on_background
                                         font.family: theme.fontFamily
                                         font.pixelSize: 16
                                         font.bold: true

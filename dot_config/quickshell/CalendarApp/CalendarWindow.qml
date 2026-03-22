@@ -112,7 +112,7 @@ PanelWindow {
         font.family: "monospace"
         background: Rectangle { color: "transparent" }
         contentItem: Text { 
-            text: parent.text; color: theme.primary; font.pixelSize: 18; 
+            text: parent.text; color: theme.on_background; font.pixelSize: 18; 
             verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter
         }
     }
@@ -129,7 +129,7 @@ PanelWindow {
             text: parent.text
             font.family: theme.fontFamily
             font.pixelSize: 12
-            color: theme.primary
+            color: theme.on_background
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             padding: 4
@@ -216,11 +216,11 @@ PanelWindow {
 
         Rectangle {
             anchors.fill: parent
-            color: theme ? theme.background : "#1e1e2e"
-            border.color: theme ? theme.primary : "#89b4fa"
-            border.width: 2
-            radius: 10
-            opacity: 0.9 // Only the background is transparent
+            color: theme ? theme.waybarBackground : "#1e1e2e"
+            border.color: theme ? theme.waybarBorder : "#89b4fa"
+            border.width: theme ? theme.waybarBorderWidth : 2
+            radius: theme ? theme.waybarRadius : 10
+            opacity: theme ? theme.quickshellPanelOpacity : 0.94
         }
 
         ColumnLayout {
@@ -245,7 +245,7 @@ PanelWindow {
                     Text {
                         Layout.preferredWidth: 120 
                         text: monthNames[currentMonth] + " " + currentYear
-                        color: theme.primary
+                        color: theme.on_background
                         font.family: theme.fontFamily
                         font.pixelSize: 18
                         font.bold: true
@@ -306,7 +306,7 @@ PanelWindow {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             text: model.weekNumber
-                            color: theme.primary
+                            color: theme.on_background
                             opacity: 0.7
                             font.family: theme.fontFamily
                             font.pixelSize: 13
@@ -330,7 +330,7 @@ PanelWindow {
                             Text {
                                 Layout.fillWidth: true
                                 text: modelData
-                                color: theme.primary
+                                color: theme.on_background
                                 font.family: theme.fontFamily
                                 font.pixelSize: 14
                                 font.bold: true

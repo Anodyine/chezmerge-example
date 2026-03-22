@@ -88,11 +88,11 @@ PanelWindow {
 
         Rectangle {
             anchors.fill: parent
-            color: theme ? theme.background : "#1e1e2e"
-            border.color: theme ? theme.primary : "#89b4fa"
-            border.width: 2
+            color: theme ? theme.waybarBackground : "#1e1e2e"
+            border.color: theme ? theme.waybarBorder : "#89b4fa"
+            border.width: theme ? theme.waybarBorderWidth : 2
             radius: 40
-            opacity: 0.9 // Only the background is transparent
+            opacity: theme ? theme.waybarOpacity : 0.9
         }
 
         // ==========================================

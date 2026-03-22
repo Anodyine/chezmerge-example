@@ -43,6 +43,11 @@ echo "Generating colors from: $WALLPAPER (mode: $MODE)"
 sleep 1
 "$HOME/.config/waybar/launch.sh"
 "$HOME/.config/nwg-dock-hyprland/launch.sh" &
+pkill -x qs || true
+sleep 0.5
+qs &
+PROFILE="com.ml4w.dotfiles" qs -p "$HOME/.local/share/ml4w-dotfiles-settings/quickshell" &
+qs -p "$HOME/.config/quickshell/overview" &
 if command -v pywalfox >/dev/null 2>&1; then
     pywalfox update
 fi
