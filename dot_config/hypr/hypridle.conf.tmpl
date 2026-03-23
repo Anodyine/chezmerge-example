@@ -23,11 +23,13 @@ listener {
     on-timeout = ~/.config/hypr/scripts/lock.sh   # lock screen when timeout has passed
 }
 
+{{ if ne .chezmoi.hostname "ml-server" -}}
 listener {
     timeout = 660                                                     # 11min
     on-timeout = hyprctl dispatch dpms off                            # screen off when timeout has passed
     on-resume = hyprctl dispatch dpms on && brightnessctl -r          # screen on when activity is detected after timeout has fired.
 }
+{{ end -}}
 
 {{ if ne .chezmoi.hostname "ml-server" -}}
 listener {
