@@ -43,5 +43,6 @@
       "editor.semanticHighlighting.enabled": true
   },
   "python.defaultInterpreterPath": "/sbin/python3.14",
-  "explorer.confirmPasteNative": false
+  "explorer.confirmPasteNative": false,
+  "git.enableSmartCommit": true
 }
