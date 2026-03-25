@@ -119,6 +119,7 @@ gvfs-mtp
 openssh
 man-db
 htop                    # ADDED: (from pkgs.sh)
+netdata                 # ADDED: Temperature/history dashboard + long-running collector
 vim                     # ADDED: (from pkgs.sh)
 neovim                  # ADDED: (from pkgs.sh)
 bat

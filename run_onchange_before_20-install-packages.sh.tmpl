@@ -224,6 +224,28 @@ enable_sshd_service() {
   warn "And logs with: sudo journalctl -u sshd -u ssh"
 }
 
+enable_netdata_service() {
+  need_cmd systemctl
+
+  # Ensure netdata is installed
+  if ! pacman -Qq netdata >/dev/null 2>&1; then
+    info "Installing netdata"
+    sudo pacman -S --needed --noconfirm netdata
+  fi
+
+  if sudo systemctl enable --now netdata.service >/dev/null 2>&1; then
+    info "Enabled and started netdata.service"
+    if systemctl is-active --quiet netdata.service; then
+      info "Netdata is active. Open http://localhost:19999"
+    fi
+    return 0
+  fi
+
+  warn "Could not enable netdata.service."
+  warn "Check available units with: systemctl list-unit-files | grep -E '^netdata'"
+  warn "And logs with: sudo journalctl -u netdata"
+}
+
 install_oh_my_zsh() {
   if [ -d "${HOME}/.oh-my-zsh" ]; then
     info "Oh My Zsh already installed at ~/.oh-my-zsh"
@@ -295,6 +317,7 @@ main() {
   install_plugins
   make_default_shell
   enable_sshd_service
+  enable_netdata_service
 
   {{ if eq .chezmoi.hostname "arch-surface" -}}
     sudo pacman -S --needed --noconfirm intel-media-driver libva-utils

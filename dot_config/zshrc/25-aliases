@@ -60,4 +60,4 @@ alias ascii='~/.config/ml4w/scripts/ml4w-ascii-header'
 # System
 # -----------------------------------------------------
 alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
-
+alias tmax='temp-peaks'

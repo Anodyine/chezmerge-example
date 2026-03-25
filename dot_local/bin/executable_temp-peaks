@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+API_BASE="${NETDATA_URL:-http://127.0.0.1:19999}"
+WINDOW_RAW="${1:-24h}"
+
+need_cmd() {
+  command -v "$1" >/dev/null 2>&1 || {
+    printf 'error: missing command: %s\n' "$1" >&2
+    exit 1
+  }
+}
+
+to_seconds() {
+  local raw="${1,,}"
+  if [[ "$raw" =~ ^[0-9]+$ ]]; then
+    printf '%s\n' "$raw"
+    return 0
+  fi
+  if [[ "$raw" =~ ^([0-9]+)([smhd])$ ]]; then
+    local n="${BASH_REMATCH[1]}"
+    local u="${BASH_REMATCH[2]}"
+    case "$u" in
+      s) printf '%s\n' "$n" ;;
+      m) printf '%s\n' "$((n * 60))" ;;
+      h) printf '%s\n' "$((n * 3600))" ;;
+      d) printf '%s\n' "$((n * 86400))" ;;
+      *) return 1 ;;
+    esac
+    return 0
+  fi
+  return 1
+}
+
+window_seconds="$(to_seconds "$WINDOW_RAW" || true)"
+if [[ -z "${window_seconds:-}" ]]; then
+  printf 'usage: temp-peaks [window]\n' >&2
+  printf 'example windows: 15m, 6h, 1d, 86400\n' >&2
+  exit 2
+fi
+
+need_cmd curl
+need_cmd jq
+need_cmd sort
+need_cmd awk
+
+charts_json="$(curl -fsS "${API_BASE}/api/v1/charts")" || {
+  printf 'error: netdata API unreachable at %s\n' "$API_BASE" >&2
+  exit 1
+}
+
+mapfile -t cpu_ids < <(
+  jq -r '.charts | keys[] | select(test("^sensors\\.temperature_(k10temp|coretemp|acpitz).+_input$"))' <<<"$charts_json"
+)
+
+mapfile -t gpu_ids < <(
+  jq -r '.charts | keys[] | select(test("^nvidia_smi\\.gpu_.+_temperature$") or test("^sensors\\.temperature_amdgpu.+_input$"))' <<<"$charts_json"
+)
+
+fetch_max() {
+  local chart_id="$1"
+  local data_json
+  # Query a time-series window and compute max locally.
+  # This avoids empty single-bucket responses early after collector startup.
+  data_json="$(curl -fsS "${API_BASE}/api/v1/data?chart=${chart_id}&after=-${window_seconds}&group=max&points=1440&format=json" 2>/dev/null || true)"
+  if [[ -z "$data_json" ]]; then
+    return 1
+  fi
+  jq -r '
+    if (.data | length) == 0 then
+      empty
+    else
+      ([.data[][1] | select(. != null)] | max // empty)
+    end
+  ' <<<"$data_json"
+}
+
+collect_rows() {
+  local kind="$1"
+  shift
+  local ids=("$@")
+  for id in "${ids[@]}"; do
+    local maxv
+    maxv="$(fetch_max "$id" || true)"
+    [[ -z "${maxv:-}" ]] && continue
+    printf '%s\t%s\t%s\n' "$maxv" "$kind" "$id"
+  done
+}
+
+cpu_rows="$(collect_rows "CPU" "${cpu_ids[@]}")"
+gpu_rows="$(collect_rows "GPU" "${gpu_ids[@]}")"
+rows="$(printf '%s\n%s\n' "$cpu_rows" "$gpu_rows" | awk 'NF')"
+
+if [[ -z "${rows:-}" ]]; then
+  printf 'No temperature data yet for window %s.\n' "$WINDOW_RAW"
+  printf 'Try again in a minute after some workload.\n'
+  exit 0
+fi
+
+printf 'Netdata temp peaks (window: %s, source: %s)\n\n' "$WINDOW_RAW" "$API_BASE"
+
+print_section() {
+  local kind="$1"
+  local section
+  section="$(awk -F'\t' -v k="$kind" '$2 == k' <<<"$rows" | sort -t$'\t' -k1,1nr)"
+  [[ -z "${section:-}" ]] && return 0
+
+  printf '%s peaks:\n' "$kind"
+  while IFS=$'\t' read -r val _kind id; do
+    printf '  %-78s %7.2f C\n' "$id" "$val"
+  done <<<"$section"
+
+  local top
+  top="$(head -n1 <<<"$section")"
+  local top_val top_id
+  top_val="$(awk -F'\t' '{print $1}' <<<"$top")"
+  top_id="$(awk -F'\t' '{print $3}' <<<"$top")"
+  printf '  -> %s overall max: %.2f C (%s)\n\n' "$kind" "$top_val" "$top_id"
+}
+
+print_section "CPU"
+print_section "GPU"
