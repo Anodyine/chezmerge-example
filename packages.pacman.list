@@ -160,3 +160,5 @@ go
 texlive-meta
 texlive-binextra
 zip
+
+python-huggingface-hub
