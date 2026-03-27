@@ -3,6 +3,16 @@
     "group":"Status Bar",
     "description":"Configuration of the Waybar status bar.",
     "settings":[{
+        "name": "Select Waybar Theme",
+        "id": "theme_folder",
+        "instructions": "Choose your theme:",
+        "file": "~/.config/ml4w/settings/waybar-theme.sh",
+        "type": "folders",
+        "folder": "~/.config/waybar/themes",
+        "mode": "overwrite",
+        "default": "ml4w-glass-center",
+        "post_command": "~/.config/waybar/waybar-quickshell.sh"
+    },{
       "name": "Show App Menu",
       "id": "toggle_appmenu",
       "instructions": "Do you want to show the app menu?",
@@ -71,7 +81,7 @@
     }]
   },{
     "group":"Appearance",
-    "description":"Description",
+    "description":"Change some settings to customize the look and feel.",
     "settings":[{
       "name": "Rofi Border Size",
       "id": "rofi_bordersize",
@@ -127,7 +137,7 @@
         "type": "files",
         "folder": "~/.config/hypr/conf/windows",
         "mode": "replace",
-        "match": "source = ~/.config/hypr/conf/window/.*",
+        "match": "source = ~/.config/hypr/conf/windows/.*",
         "default": "default.conf"
     },{
         "name": "Workspace Variants",
@@ -137,17 +147,8 @@
         "type": "files",
         "folder": "~/.config/hypr/conf/workspaces",
         "mode": "replace",
-        "match": "source = ~/.config/hypr/conf/workspace/.*",
+        "match": "source = ~/.config/hypr/conf/workspaces/.*",
         "default": "default.conf"
-    },{
-        "name": "Select Waybar Theme",
-        "id": "theme_folder",
-        "instructions": "Choose your theme folder:",
-        "file": "~/.config/ml4w/settings/waybar_theme",
-        "type": "folders",
-        "folder": "~/.config/waybar/themes",
-        "mode": "overwrite",
-        "default": "glass-theme"
     },{
       "name": "Kitty Cursor Trail",
       "id": "toggle_kittycursortrail",
@@ -166,7 +167,7 @@
       "name": "Default Terminal",
       "id": "default_terminal",
       "instructions": "Enter the command to execute the terminal",
-      "file": "~/.config/ml4w/settings/terminal",
+      "file": "~/.config/ml4w/settings/terminal.sh",
       "type": "textfield",
       "mode": "overwrite",
       "default": "kitty"
@@ -182,7 +183,7 @@
       "name": "Default Email Client",
       "id": "default_email",
       "instructions": "Enter the command to execute the email client",
-      "file": "~/.config/ml4w/settings/email.sh",
+      "file": "~/.config/ml4w/settings/email",
       "type": "textfield",
       "mode": "overwrite",
       "default": "evolution"
@@ -264,6 +265,16 @@
         "mode": "replace",
         "match": "source = ~/.config/hypr/conf/keybindings/.*",
         "default": "default.conf"
+    },{
+        "name": "Monitor Variants",
+        "id": "variant_monitor",
+        "instructions": "Choose your preferred monitor variant:",
+        "file": "~/.config/hypr/conf/monitor.conf",
+        "type": "files",
+        "folder": "~/.config/hypr/conf/monitors",
+        "mode": "replace",
+        "match": "source = ~/.config/hypr/conf/monitors/.*",
+        "default": "nwg-displays.conf"
     },{
         "name": "Environment Variants",
         "id": "variant_environment",
