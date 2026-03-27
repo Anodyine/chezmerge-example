@@ -43,7 +43,16 @@ echo ":: Setting wallpaper with source image $wallpaper"
 if [ -f ~/.local/bin/waypaper ]; then
     export PATH=$PATH:~/.local/bin/
 fi
-waypaper --wallpaper "$wallpaper" &
+if command -v waypaper >/dev/null 2>&1; then
+    waypaper --wallpaper "$wallpaper" &
+else
+    echo ":: waypaper not found in PATH"
+fi
+
+# Recent backend/package changes can prevent Waypaper CLI from invoking the
+# configured post_command reliably during autostart. Run the follow-up step
+# explicitly so Waybar, colors, and cache generation still complete.
+~/.config/hypr/scripts/wallpaper.sh "$wallpaper" &
 
 # -----------------------------------------------------
 # Start Quickshell
@@ -71,7 +80,13 @@ qs -p $HOME/.config/quickshell/overview &
 # -----------------------------------------------------
 
 echo ":: Waiting for matugen to complete task... "
+wait_started_at=$(date +%s)
 while [ -f ~/.cache/ml4w-process-autostart-running ]; do
+    if [ $(( $(date +%s) - wait_started_at )) -ge 30 ]; then
+        echo ":: Wallpaper startup timed out. Clearing autostart lock."
+        rm -f ~/.cache/ml4w-process-autostart-running
+        break
+    fi
     sleep 0.2
 done
 

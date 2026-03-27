@@ -174,8 +174,10 @@ $HOME/.config/nwg-dock-hyprland/launch.sh &
 # Update Pywalfox
 # -----------------------------------------------------
 
-if type pywalfox >/dev/null 2>&1; then
-    pywalfox update
+if command -v pywalfox >/dev/null 2>&1; then
+    if ! pywalfox update >/dev/null 2>&1; then
+        _writeLog "pywalfox update failed. Continuing without it."
+    fi
 fi
 
 # -----------------------------------------------------
