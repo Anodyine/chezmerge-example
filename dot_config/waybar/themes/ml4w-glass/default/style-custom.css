@@ -4,7 +4,7 @@
 .modules-left,
 .modules-right,
 .modules-center {
-    margin: 0;
+    margin: 0 6px 0 0;
     box-shadow: 0 0 6 @shadow;
     background-color: @surface;
     background: radial-gradient(
