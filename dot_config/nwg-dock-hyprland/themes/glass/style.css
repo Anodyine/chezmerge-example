@@ -13,7 +13,7 @@ window {
 
 #box {
   	/* Define attributes of the box surrounding icons here */
-  	padding: 4px;
+  	padding: 8px 4px;
 }
 
 #active {

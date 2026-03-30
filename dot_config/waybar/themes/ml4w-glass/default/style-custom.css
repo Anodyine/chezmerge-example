@@ -16,6 +16,14 @@
         linear-gradient(@primary, @on_primary) border-box;
 }
 
+.modules-center {
+    padding: 6px 0;
+}
+
+.modules-right {
+    padding: 6px 0;
+}
+
 #workspaces {
     padding: 4px 3px;
     min-width: 0;
