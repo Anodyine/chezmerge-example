@@ -37,6 +37,10 @@ exec-once = wl-paste --watch cliphist store
 # Start autostart cleanup
 exec-once = ~/.config/hypr/scripts/cleanup.sh
 
+{{ if eq .chezmoi.hostname "arch-surface" -}}
+exec-once = ~/.config/hypr/scripts/assign-workspaces.sh
+{{ end }}
+
 # Load configuration from ML4W Hyprland Settings App
 exec = ~/.config/com.ml4w.hyprlandsettings/hyprctl.sh
 
