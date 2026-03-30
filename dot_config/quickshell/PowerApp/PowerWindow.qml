@@ -19,6 +19,7 @@ PanelWindow {
 
     anchors {
         right: true
+        bottom: true
     }
 
     // --- CLICK OUTSIDE TO CLOSE (Native Hyprland) ---
@@ -49,14 +50,15 @@ PanelWindow {
     visible: isOpen || slideAnim.running
     
     margins {
-        right: root.currentMargin
+        right: root.currentRightMargin
+        bottom: 20
     }
 
-    // Ternary operator: If open, set to 20. If closed, set to -150.
-    property real currentMargin: isOpen ? 20 : -150 
+    // Match the sidebar/calendar spacing so the popup clears the right-side Waybar.
+    property real currentRightMargin: isOpen ? 72 : -(implicitWidth + 40)
 
-    // This automatically animates currentMargin whenever it changes!
-    Behavior on currentMargin {
+    // This automatically animates currentRightMargin whenever it changes.
+    Behavior on currentRightMargin {
         NumberAnimation {
             id: slideAnim
             duration: 350
