@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SRC_DIR="$HOME/.config/nwg-dock-hyprland/images"
+DST_DIR="/usr/share/nwg-dock-hyprland/images"
+
+for name in task-empty-vertical.svg task-single-vertical.svg task-multiple-vertical.svg; do
+    if [[ -f "$SRC_DIR/$name" ]]; then
+        sudo install -Dm644 "$SRC_DIR/$name" "$DST_DIR/$name"
+    fi
+done
