@@ -213,12 +213,12 @@
   },
   // System tray
   "tray": {
-    "icon-size": 21,
-    "spacing": 10
+    "icon-size": 18,
+    "spacing": 6
   },
   // Clock
   "clock": {
-    "format": "{:%H:%M %a}",
+    "format": "{:%a\n%H:%M}",
     "on-click": "qs ipc call calendar toggle",
     "timezone": "",
     "tooltip": false
@@ -333,18 +333,18 @@
       "warning": 30,
       "critical": 15
     },
-    "format": "{icon} {capacity}%",
-    "format-charging": "  {capacity}%",
-    "format-plugged": "  {capacity}%",
+    "format": "{icon}",
+    "format-charging": "",
+    "format-plugged": "",
     "format-alt": "{icon}  {time}",
     // "format-good": "", // An empty format will hide the module
     // "format-full": "",
     "format-icons": [
-      " ",
-      " ",
-      " ",
-      " ",
-      " "
+      "",
+      "",
+      "",
+      "",
+      ""
     ]
   },
   // Power Profiles Daemon
@@ -364,19 +364,19 @@
   // Pulseaudio
   "pulseaudio": {
     // "scroll-step": 1, // %, can be a float
-    "format": "{icon}  {volume}%",
-    "format-bluetooth": "{volume}% {icon} {format_source}",
+    "format": "{icon}",
+    "format-bluetooth": "{icon} {format_source}",
     "format-bluetooth-muted": " {icon} {format_source}",
     "format-muted": " {format_source}",
-    "format-source": "{volume}% ",
+    "format-source": "",
     "format-source-muted": "",
     "format-icons": {
-      "headphone": " ",
-      "hands-free": " ",
-      "headset": " ",
-      "phone": " ",
-      "portable": " ",
-      "car": " ",
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
       "default": [
         "",
         "",
@@ -387,7 +387,7 @@
   },
   // Bluetooth
   "bluetooth": {
-  "format": " {status}",
+  "format": "",
   "format-disabled": "",
   "format-off": "",
   "interval": 30,

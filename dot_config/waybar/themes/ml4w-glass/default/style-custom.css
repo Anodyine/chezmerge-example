@@ -4,7 +4,7 @@
 .modules-left,
 .modules-right,
 .modules-center {
-    margin: 2px;
+    margin: 0;
     box-shadow: 0 0 6 @shadow;
     background-color: @surface;
     background: radial-gradient(
@@ -17,8 +17,15 @@
 }
 
 #workspaces {
-    padding: 5px 3px 5px 0;
+    padding: 4px 3px;
     min-width: 0;
+}
+
+#workspaces button {
+    padding: 0 1px;
+    margin: 1px 2px;
+    min-width: 10px;
+    border-radius: 5px;
 }
 
 #workspaces button:hover {
@@ -31,5 +38,38 @@
     border: 1px solid @primary;
     box-shadow: none;
     background-image: none;
+    min-width: 10px;
+    padding: 0 1px;
+    margin: 1px 2px;
+    border-radius: 6px;
+}
+
+.modules-right label.module {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 6px 1px;
     min-width: 16px;
+    font-size: 13px;
+}
+
+#clock {
+    padding-left: 0;
+    padding-right: 0;
+    min-width: 0;
+    font-size: 12px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#tray {
+    padding: 6px 1px;
+}
+
+#custom-ml4w-welcome {
+    padding-left: 0;
+    padding-right: 6px;
+    min-width: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    background-size: 60%;
 }

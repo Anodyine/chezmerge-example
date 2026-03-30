@@ -15,9 +15,9 @@ if [ ! -f $HOME/.config/ml4w/settings/dock-disabled ]; then
     killall nwg-dock-hyprland
     sleep 0.5
     if [ -f $HOME/.config/ml4w/settings/dock-autohide ]; then
-        nwg-dock-hyprland -o DP-2 -p left -d -i 32 -w 5 -ml 10 -x -s themes/$DOCK_THEME/style.css -c "$HOME/.config/hypr/scripts/launcher.sh"
+        nwg-dock-hyprland -o DP-2 -p left -d -i 26 -w 5 -ml 10 -x -s themes/$DOCK_THEME/style.css -c "$HOME/.config/hypr/scripts/launcher.sh"
     else
-        nwg-dock-hyprland -o DP-2 -p left -i 32 -w 5 -ml 10 -x -s themes/$DOCK_THEME/style.css -c "$HOME/.config/hypr/scripts/launcher.sh"
+        nwg-dock-hyprland -o DP-2 -p left -i 26 -w 5 -ml 10 -x -s themes/$DOCK_THEME/style.css -c "$HOME/.config/hypr/scripts/launcher.sh"
     fi
 else
     killall nwg-dock-hyprland

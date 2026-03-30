@@ -1,10 +1,11 @@
 {
     // General Settings
     "layer": "top",
+    "position": "right",
     "margin-top": 4,
     "margin-bottom": 0,
-    "margin-left": 4,
-    "margin-right": 4,
+    "margin-left": 0,
+    "margin-right": 0,
     "spacing": 0,
     // Load Modules
     "include": [
@@ -13,7 +14,6 @@
     ],
     // Modules Left
     "modules-left": [
-        "custom/appmenu",
         "hyprland/workspaces",
         //"wlr/taskbar",
         //"group/quicklinks",
