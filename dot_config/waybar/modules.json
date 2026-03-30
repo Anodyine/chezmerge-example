@@ -95,8 +95,8 @@
   },
   // Updates Count
   "custom/updates": {
-    "format": "  {}",
-    "escape": true,
+    "format": "{}",
+    "escape": false,
     "return-type": "json",
     "exec": "~/.config/ml4w/scripts/ml4w-check-system-updates",
     "interval": 1800,
@@ -219,6 +219,18 @@
   // Clock
   "clock": {
     "format": "{:%a\n%H:%M}",
+    "on-click": "qs ipc call calendar toggle",
+    "timezone": "",
+    "tooltip": false
+  },
+  "clock#day": {
+    "format": "{:%a}",
+    "on-click": "qs ipc call calendar toggle",
+    "timezone": "",
+    "tooltip": false
+  },
+  "clock#time": {
+    "format": "{:%H:%M}",
     "on-click": "qs ipc call calendar toggle",
     "timezone": "",
     "tooltip": false

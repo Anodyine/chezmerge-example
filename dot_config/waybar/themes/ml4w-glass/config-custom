@@ -22,7 +22,8 @@
     ],
     // Modules Center
     "modules-center": [
-        "clock",
+        "clock#day",
+        "clock#time",
         "custom/empty"
     ],
     // Modules Right    

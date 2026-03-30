@@ -96,8 +96,9 @@ if [ "$updates" -gt $threshhold_red ]; then
 fi
 if [ "$updates" != 0 ]; then
     if [ "$updates" -gt $threshhold_green ]; then
-        printf '{"text": "%s", "alt": "%s", "tooltip": "Click to update your system", "class": "%s"}' "$updates" "$updates" "$css_class"
+        updates_markup="<span size='xx-small'> </span><span size='smaller' rise='-2500'>${updates}</span>"
+        printf '{"text": "%s", "alt": "%s", "tooltip": "Click to update your system", "class": "%s"}' "$updates_markup" "$updates" "$css_class"
     else
-        printf '{"text": "0", "alt": "0", "tooltip": "No updates available", "class": "green"}'
+        printf '{"text": "<span size='\''xx-small'\''> </span><span size='\''smaller'\'' rise='\''-2500'\''>0</span>", "alt": "0", "tooltip": "No updates available", "class": "green"}'
     fi
 fi
