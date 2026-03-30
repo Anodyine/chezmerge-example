@@ -18,9 +18,9 @@ PanelWindow {
     implicitHeight: 340 
     color: "transparent"
 
-    // Anchored to the Upper Side
+    // Place the popup beside the right-side Waybar clock.
     anchors {
-        left: true
+        right: true
         top: true
     }
 
@@ -45,7 +45,7 @@ PanelWindow {
         }
     }
 
-    // --- ANIMATION LOGIC (Vertical Slide + Wayland Fix) ---
+    // --- ANIMATION LOGIC (Horizontal Slide + Wayland Fix) ---
     property bool isOpen: false
     
     // Guard variable to prevent Wayland from unmapping the window too early
@@ -71,15 +71,16 @@ PanelWindow {
         }
     }
     
-    // Animate between your specific 87px top margin and off-screen (-800)
-    property real currentTopMargin: isOpen ? 87 : -800 
+    // Keep the calendar vertically aligned with the centered clock on the right bar.
+    property real openTopMargin: Math.max(20, Math.round((screen.height - implicitHeight) / 2))
+    property real currentRightMargin: isOpen ? 72 : -(implicitWidth + 40)
 
     margins { 
-        top: root.currentTopMargin
-        left: 20
+        top: root.openTopMargin
+        right: root.currentRightMargin
     }
 
-    Behavior on currentTopMargin {
+    Behavior on currentRightMargin {
         NumberAnimation {
             id: slideAnim
             duration: 350

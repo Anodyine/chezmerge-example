@@ -57,7 +57,7 @@ PanelWindow {
     visible: isOpen || slideAnim.running
     
     margins { right: root.currentMargin }
-    property real currentMargin: isOpen ? 20 : -450 
+    property real currentMargin: isOpen ? 72 : -450 
 
     Behavior on currentMargin {
         NumberAnimation {
