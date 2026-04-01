@@ -378,7 +378,7 @@
     "format": "{}",
     "return-type": "json",
     "interval": 1,
-    "exec": "bash -lc 'vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null); if printf \"%s\" \"$vol\" | grep -q MUTED; then icon=\"\"; else level=$(printf \"%s\\n\" \"$vol\" | awk \"{print int(\\$2 * 100)}\"); if [ -z \"$level\" ] || [ \"$level\" -le 0 ]; then icon=\"\"; elif [ \"$level\" -lt 50 ]; then icon=\"\"; else icon=\"\"; fi; fi; printf \"{\\\"text\\\":\\\"%s\\\"}\\n\" \"$icon\"'",
+    "exec": "bash -lc 'vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null); info=$(wpctl inspect @DEFAULT_AUDIO_SINK@ 2>/dev/null | tr \"[:upper:]\" \"[:lower:]\"); muted=0; if printf \"%s\" \"$vol\" | grep -q MUTED; then muted=1; fi; if printf \"%s\" \"$info\" | grep -Eq \"headset|hands-free|handsfree\"; then icon=\"\"; elif printf \"%s\" \"$info\" | grep -Eq \"headphone\"; then icon=\"\"; elif printf \"%s\" \"$info\" | grep -Eq \"bluez|bluetooth\"; then icon=\"\"; elif printf \"%s\" \"$info\" | grep -Eq \"phone|portable\"; then icon=\"\"; elif printf \"%s\" \"$info\" | grep -Eq \"(^|[^a-z])car([^a-z]|$)\"; then icon=\"\"; elif [ \"$muted\" -eq 1 ]; then icon=\"\"; else level=$(printf \"%s\\n\" \"$vol\" | awk \"{print int(\\$2 * 100)}\"); if [ -z \"$level\" ] || [ \"$level\" -le 0 ]; then icon=\"\"; elif [ \"$level\" -lt 50 ]; then icon=\"\"; else icon=\"\"; fi; fi; printf \"{\\\"text\\\":\\\"%s\\\"}\\n\" \"$icon\"'",
     "on-click": "pavucontrol --tab=3",
     "on-scroll-up": "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+",
     "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
