@@ -52,6 +52,22 @@
     border-radius: 6px;
 }
 
+#custom-updates {
+    margin: 2px 4px;
+    padding: 4px 1px;
+    min-width: 0;
+    border-radius: 6px;
+    border: 1px solid transparent;
+}
+
+#custom-updates.yellow,
+#custom-updates.red,
+#custom-updates.green {
+    margin: 2px 6px;
+    padding: 4px 1px;
+    min-width: 0;
+}
+
 .modules-right label.module {
     margin-left: 0;
     margin-right: 0;
