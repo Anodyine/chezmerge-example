@@ -373,29 +373,25 @@
     "on-scroll-up": "true",
     "on-scroll-down": "true"
   },
-  // Pulseaudio
-  "pulseaudio": {
-    // "scroll-step": 1, // %, can be a float
-    "format": "{icon}",
-    "format-bluetooth": "{icon} {format_source}",
-    "format-bluetooth-muted": " {icon} {format_source}",
-    "format-muted": " {format_source}",
-    "format-source": "",
-    "format-source-muted": "",
-    "format-icons": {
-      "headphone": "",
-      "hands-free": "",
-      "headset": "",
-      "phone": "",
-      "portable": "",
-      "car": "",
-      "default": [
-        "",
-        "",
-        ""
-      ]
-    },
-    "on-click": "pavucontrol"
+  // Audio output
+  "custom/audio-out": {
+    "format": "{}",
+    "return-type": "json",
+    "interval": 1,
+    "exec": "bash -lc 'vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null); if printf \"%s\" \"$vol\" | grep -q MUTED; then icon=\"\"; else level=$(printf \"%s\\n\" \"$vol\" | awk \"{print int(\\$2 * 100)}\"); if [ -z \"$level\" ] || [ \"$level\" -le 0 ]; then icon=\"\"; elif [ \"$level\" -lt 50 ]; then icon=\"\"; else icon=\"\"; fi; fi; printf \"{\\\"text\\\":\\\"%s\\\"}\\n\" \"$icon\"'",
+    "on-click": "pavucontrol --tab=3",
+    "on-scroll-up": "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
+    "tooltip-format": "Audio Output"
+  },
+  // Audio input
+  "custom/audio-in": {
+    "format": "{}",
+    "return-type": "json",
+    "interval": 1,
+    "exec": "bash -lc 'vol=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null); if printf \"%s\" \"$vol\" | grep -q MUTED; then icon=\"\"; else icon=\"\"; fi; printf \"{\\\"text\\\":\\\"%s\\\"}\\n\" \"$icon\"'",
+    "on-click": "pavucontrol --tab=4",
+    "tooltip-format": "Audio Input"
   },
   // Bluetooth
   "bluetooth": {

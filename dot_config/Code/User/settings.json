@@ -44,5 +44,8 @@
   },
   "python.defaultInterpreterPath": "/sbin/python3.14",
   "explorer.confirmPasteNative": false,
-  "git.enableSmartCommit": true
+  "git.enableSmartCommit": true,
+  "editor.fontFamily": "'Symbols Nerd Font Mono', 'JetBrainsMono Nerd Font', 'FiraCode Nerd Font', monospace",
+  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font', monospace"
+
 }

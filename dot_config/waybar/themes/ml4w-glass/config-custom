@@ -29,7 +29,8 @@
     // Modules Right    
     "modules-right": [
         "custom/updates",
-        "pulseaudio",
+        "custom/audio-out",
+        "custom/audio-in",
         //"backlight",
         "bluetooth",
         "battery",
