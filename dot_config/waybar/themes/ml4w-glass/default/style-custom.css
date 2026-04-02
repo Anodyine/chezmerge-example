@@ -53,15 +53,14 @@
 }
 
 #custom-updates {
-    margin: 0px 4px;
+    margin: 0px 2px 0px 6px;
     padding: 4px 0px;
     min-width: 0;
     border-radius: 6px;
 }
 
 #custom-updates.yellow,
-#custom-updates.red,
-#custom-updates.green {
+#custom-updates.red {
     margin: 2px 6px;
     margin-bottom: 0;
     padding: 4px 1px;
