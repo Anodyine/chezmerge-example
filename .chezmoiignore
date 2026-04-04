@@ -9,6 +9,7 @@ packages.uv.list
 vscode-extensions.list
 README.md
 fix-btrfs-layout.sh
+.codex
 
 # Folders
 tools
