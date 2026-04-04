@@ -4,8 +4,9 @@
 .modules-left,
 .modules-right,
 .modules-center {
-    margin: 0 6px 0 0;
+    margin: 0 3px 0 0;
     box-shadow: 0 0 6 @shadow;
+    min-width: 30px;
     background-color: @surface;
     background: radial-gradient(
             circle at 50% 250%,
@@ -25,14 +26,13 @@
 }
 
 #workspaces {
-    padding: 4px 3px;
+    padding: 4px;
     min-width: 0;
 }
 
 #workspaces button {
     padding: 0 1px;
     margin: 1px 2px;
-    min-width: 10px;
     border-radius: 5px;
 }
 
@@ -62,7 +62,7 @@
 #custom-updates.yellow,
 #custom-updates.red {
     margin: 2px 6px;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
     padding: 5px 1px 3px 0;
     min-width: 0;
 }
