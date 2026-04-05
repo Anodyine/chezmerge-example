@@ -34,7 +34,7 @@ if [ ! -f "$HOME/.config/ml4w/settings/dock-disabled" ]; then
         exit 0
     fi
 
-    dock_args=(-m -p left -i 30 -w 5 -ml 6 -x -s "themes/$DOCK_THEME/style.css" -c "$HOME/.config/hypr/scripts/launcher.sh")
+    dock_args=(-m -p left -i 33 -w 5 -ml 6 -x -s "themes/$DOCK_THEME/style.css" -c "$HOME/.config/hypr/scripts/launcher.sh")
     if [ -f "$HOME/.config/ml4w/settings/dock-autohide" ]; then
         dock_args=(-d "${dock_args[@]}")
     fi

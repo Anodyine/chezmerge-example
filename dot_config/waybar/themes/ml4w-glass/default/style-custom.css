@@ -6,7 +6,7 @@
 .modules-center {
     margin: 0 3px 0 0;
     box-shadow: 0 0 6 @shadow;
-    min-width: 30px;
+    min-width: 45px;
     background-color: @surface;
     background: radial-gradient(
             circle at 50% 250%,
