@@ -11,6 +11,7 @@ DEFAULT_WALLPAPER="$HOME/.config/ml4w/wallpapers/default.jpg"
 BLURRED_WALLPAPER="$CACHE_FOLDER/blurred_wallpaper.png"
 SQUARE_WALLPAPER="$CACHE_FOLDER/square_wallpaper.png"
 RASI_FILE="$CACHE_FOLDER/current_wallpaper.rasi"
+PERSISTED_WALLPAPER="$HOME/.config/ml4w/settings/current-wallpaper"
 
 # Settings
 SETTINGS_BLUR="$HOME/.config/ml4w/settings/blur.sh"
@@ -58,6 +59,17 @@ send_notification() {
     if [ "$NOTIFICATIONS" = true ]; then
         # You can adjust the icon or app name here
         notify-send -a "ml4w-wallpaper" -i "preferences-desktop-wallpaper-symbolic" "$title" "$message"
+    fi
+}
+
+persist_wallpaper_selection() {
+    mkdir -p "$(dirname "$PERSISTED_WALLPAPER")"
+    printf '%s\n' "$IMAGE_PATH" > "$PERSISTED_WALLPAPER"
+    info "Persisted wallpaper selection to $PERSISTED_WALLPAPER"
+
+    if command -v chezmoi >/dev/null 2>&1; then
+        chezmoi add "$PERSISTED_WALLPAPER" >/dev/null 2>&1 || true
+        info "Updated chezmoi source for current-wallpaper"
     fi
 }
 
@@ -175,6 +187,7 @@ if [ ! -f $CACHE_FILE ]; then
 fi
 echo "$IMAGE_PATH" > "$CACHE_FILE"
 info "Cache file written with $IMAGE_PATH"
+persist_wallpaper_selection
 
 # Process image with wallpaper effect
 if [ -f "$SETTINGS_WALLPAPER_EFFECT" ]; then
@@ -201,34 +214,6 @@ else
     awww img "$IMAGE_PATH" --transition-type $SETTINGS_TRANSITION_EFFECT
 fi
 
-# Detect Theme
-SETTINGS_FILE="$HOME/.config/gtk-3.0/settings.ini"
-THEME_PREF=$(grep -E '^gtk-application-prefer-dark-theme=' "$SETTINGS_FILE" | awk -F'=' '{print $2}')
-
-# Execute matugen
-if [ "$THEME_PREF" -eq 1 ]; then
-    if [ -f $HOME/.cargo/bin/matugen ]; then
-        $HOME/.cargo/bin/matugen image "$IMAGE_PATH" --source-color-index 0 -m "dark"
-    else
-        matugen image "$IMAGE_PATH" --source-color-index 0 -m "dark"
-    fi
-else
-    if [ -f $HOME/.cargo/bin/matugen ]; then
-        $HOME/.cargo/bin/matugen image "$IMAGE_PATH" --source-color-index 0 -m "light"
-    else
-        matugen image "$IMAGE_PATH" --source-color-index 0 -m "dark"
-    fi
-fi
-info "Matugen updated"
-
-# Update Quickshell theme
-qs ipc call theme-manager reload
-info "Quickshell Theme updated"
-
-# Update ML4W Dotfiles Settings theme
-qs -p $HOME/.local/share/ml4w-dotfiles-settings/quickshell ipc call theme-manager reload
-info "ML4W Dotfiles Settings Theme updated"
-
 # Reload Waybar
 if pgrep -x "waybar" > /dev/null
 then
@@ -245,17 +230,6 @@ info "Waybar reloaded"
 nohup bash -c "$HOME/.config/nwg-dock-hyprland/launch.sh" > /dev/null 2>&1 &
 disown
 info "nwg-dock-hyprland reloaded"
-
-# Update Pywalfox
-if type pywalfox >/dev/null 2>&1; then
-    pywalfox update
-    info "pywalfox updated"
-fi
-
-# Update SwayNC
-sleep 0.1
-swaync-client -rs
-info "SwayNC refreshed"
 
 # Create blurred image
 magick "$IMAGE_PATH" -resize 75% "$BLURRED_WALLPAPER"

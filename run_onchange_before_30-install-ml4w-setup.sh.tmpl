@@ -21,9 +21,22 @@ LEGACY_SETUP="$ML4W_SETUP_DIR/setup-arch.sh"
 PREFLIGHT_ARCH="$ML4W_SETUP_DIR/preflight-arch.sh"
 POST_ARCH_SETUP="$ML4W_SETUP_DIR/post-arch.sh"
 PACKAGES_ARCH="$ML4W_SETUP_DIR/dependencies/packages-arch"
+TMP_PREFLIGHT_ARCH=""
+TMP_BIN_DIR=""
 
 info() { printf ":: %s\n" "$*"; }
 warn() { printf ":: WARN: %s\n" "$*" >&2; }
+
+cleanup() {
+    if [ -n "${TMP_PREFLIGHT_ARCH:-}" ] && [ -f "$TMP_PREFLIGHT_ARCH" ]; then
+        rm -f "$TMP_PREFLIGHT_ARCH"
+    fi
+    if [ -n "${TMP_BIN_DIR:-}" ] && [ -d "$TMP_BIN_DIR" ]; then
+        rm -rf "$TMP_BIN_DIR"
+    fi
+}
+
+trap cleanup EXIT
 
 read_list() {
     local file="$1"
@@ -72,6 +85,32 @@ install_upstream_arch_packages() {
     fi
 }
 
+prepare_preflight_arch() {
+    local source_script="$1"
+
+    TMP_PREFLIGHT_ARCH="$(mktemp "${TMPDIR:-/tmp}/ml4w-preflight-arch.XXXXXX.sh")"
+    sed 's#sudo pacman -Rns --noconfirm swww#if pacman -Qq | grep -Fxq swww; then sudo pacman -Rns --noconfirm swww; fi#' \
+        "$source_script" >"$TMP_PREFLIGHT_ARCH"
+    chmod +x "$TMP_PREFLIGHT_ARCH"
+    printf '%s\n' "$TMP_PREFLIGHT_ARCH"
+}
+
+prepare_runtime_wrappers() {
+    TMP_BIN_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ml4w-hook-bin.XXXXXX")"
+    cat >"$TMP_BIN_DIR/sudo" <<'EOF'
+#!/usr/bin/env bash
+if [ "$#" -eq 4 ] && [ "$1" = "pacman" ] && [ "$2" = "-Rns" ] && [ "$3" = "--noconfirm" ] && [ "$4" = "swww" ]; then
+    if pacman -Qq | grep -Fxq swww; then
+        exec /usr/bin/sudo "$@"
+    fi
+    exit 0
+fi
+exec /usr/bin/sudo "$@"
+EOF
+    chmod +x "$TMP_BIN_DIR/sudo"
+    printf '%s\n' "$TMP_BIN_DIR"
+}
+
 info "ML4W CHEZMOI HOOK"
 info "Checking for ML4W setup scripts at: $ML4W_SETUP_DIR"
 
@@ -85,7 +124,7 @@ fi
 if [ -x "$PREFLIGHT_ARCH" ] && [ -x "$POST_ARCH_SETUP" ]; then
     info "Starting full ML4W Arch setup refresh..."
     cd "$ML4W_SETUP_DIR" || exit 1
-    bash ./preflight-arch.sh
+    PATH="$(prepare_runtime_wrappers):$PATH" bash "$(prepare_preflight_arch "$PREFLIGHT_ARCH")"
     install_upstream_arch_packages
     bash ./post-arch.sh
     exit 0

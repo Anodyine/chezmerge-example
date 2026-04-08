@@ -10,6 +10,7 @@
 # icon-button-qml={{ include "files/ml4w-sddm/components/IconButton.qml" | sha256sum }}
 # menu-area-qml={{ include "files/ml4w-sddm/components/MenuArea.qml" | sha256sum }}
 # cvkeyboard-qml={{ include "files/ml4w-sddm/components/CVKeyboard.qml" | sha256sum }}
+# current-wallpaper={{ include "dot_config/ml4w/settings/current-wallpaper" | sha256sum }}
 set -euo pipefail
 
 TARGET_DIR="/etc/sddm.conf.d"
@@ -30,6 +31,8 @@ AUTOLOGIN_USER="{{ .chezmoi.username }}"
 AUTOLOGIN_SESSION="hyprland"
 SDDM_BACKGROUND_NAME="Bonsai-Plant.png"
 SDDM_BACKGROUND_SOURCE="$SOURCE_DIR/wallpapers/$SDDM_BACKGROUND_NAME"
+CURRENT_WALLPAPER_FILE="$SOURCE_DIR/dot_config/ml4w/settings/current-wallpaper"
+SDDM_THEME_BACKGROUND="ml4w.jpg"
 
 echo "🚀 Configuring SDDM to use the ML4W theme for $HOSTNAME..."
 
@@ -64,16 +67,59 @@ apply_ml4w_overrides() {
 }
 
 configure_sddm_background() {
-    if [ ! -f "$SDDM_BACKGROUND_SOURCE" ]; then
-        echo "⚠️ SDDM background source not found: $SDDM_BACKGROUND_SOURCE"
+    local source_wallpaper="$SDDM_BACKGROUND_SOURCE"
+    local configured_path=""
+    local temp_jpg=""
+    local mime_type=""
+
+    if [ -f "$CURRENT_WALLPAPER_FILE" ]; then
+        configured_path="$(tr -d '\n' < "$CURRENT_WALLPAPER_FILE")"
+        configured_path="${configured_path//\$HOME/$HOME}"
+        configured_path="${configured_path/#\~/$HOME}"
+        if [ -f "$configured_path" ]; then
+            source_wallpaper="$configured_path"
+        else
+            echo "⚠️ Current wallpaper path not found for SDDM: $configured_path"
+        fi
+    fi
+
+    if [ ! -f "$source_wallpaper" ]; then
+        echo "⚠️ SDDM background source not found: $source_wallpaper"
+        return
+    fi
+
+    if command -v magick >/dev/null 2>&1; then
+        :
+    elif command -v convert >/dev/null 2>&1; then
+        :
+    else
+        echo "⚠️ ImageMagick is not installed; cannot update SDDM background."
         return
     fi
 
     sudo mkdir -p "$THEME_BACKGROUNDS_DIR"
-    sudo cp -f "$SDDM_BACKGROUND_SOURCE" "$THEME_BACKGROUNDS_DIR/$SDDM_BACKGROUND_NAME"
+    mime_type="$(file --mime-type -b "$source_wallpaper")"
+    temp_jpg="$(mktemp "${TMPDIR:-/tmp}/ml4w-sddm-wallpaper.XXXXXX.jpg")"
+
+    if [ "$mime_type" = "image/jpeg" ]; then
+        cp -f "$source_wallpaper" "$temp_jpg"
+    elif [ "$mime_type" = "image/png" ]; then
+        if command -v magick >/dev/null 2>&1; then
+            magick "$source_wallpaper" "$temp_jpg"
+        else
+            convert "$source_wallpaper" "$temp_jpg"
+        fi
+    else
+        echo "⚠️ Unsupported SDDM wallpaper format: $mime_type"
+        rm -f "$temp_jpg"
+        return
+    fi
+
+    sudo cp -f "$temp_jpg" "$THEME_BACKGROUNDS_DIR/$SDDM_THEME_BACKGROUND"
+    rm -f "$temp_jpg"
 
     if [ -f "$THEME_CONFIG" ]; then
-        sudo sed -i "s/^background = .*/background = \"$SDDM_BACKGROUND_NAME\"/" "$THEME_CONFIG"
+        sudo sed -i "s/^background = .*/background = \"$SDDM_THEME_BACKGROUND\"/" "$THEME_CONFIG"
     fi
 }
 

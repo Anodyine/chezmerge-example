@@ -7,7 +7,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Qt.labs.folderlistmodel
 import Qt5Compat.GraphicalEffects
-import qs.CustomTheme
+import qs.shared
 
 PanelWindow {
     id: root
@@ -75,6 +75,8 @@ PanelWindow {
         function close(): void { root.isOpen = false } 
     }
 
+    Theme { id: theme }
+
     // Default fallback folder just in case the file doesn't exist
     property string wallpaperFolder: "file://" + Quickshell.env("HOME") + "/.config/ml4w/wallpapers"
 
@@ -107,15 +109,15 @@ PanelWindow {
         id: control
         contentItem: Text {
             text: control.text
-            font.family: Theme.fontFamily
+            font.family: theme.fontFamily
             font.pixelSize: 14
-            color: control.highlighted ? Theme.background : Theme.primary 
+            color: control.highlighted ? theme.background : theme.on_background
             verticalAlignment: Text.AlignVCenter
         }
         background: Rectangle {
             implicitWidth: 200
             implicitHeight: 36
-            color: control.highlighted ? Theme.primary : "transparent"
+            color: control.highlighted ? theme.primary : "transparent"
             radius: 4
         }
     }
@@ -128,7 +130,7 @@ PanelWindow {
         font.family: "monospace"
         background: Rectangle { color: "transparent" }
         contentItem: Text { 
-            text: parent.text; color: Theme.primary; font.pixelSize: 18; 
+            text: parent.text; color: theme.on_background; font.pixelSize: 18; 
             verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter
         }
     }
@@ -138,11 +140,11 @@ PanelWindow {
     // ==========================================
     Rectangle {
         anchors.fill: parent
-        color: Theme.background
-        border.color: Theme.primary
-        border.width: 2
-        radius: 10
-        opacity: 0.95
+        color: theme ? theme.waybarBackground : "#1e1e2e"
+        border.color: theme ? theme.waybarBorder : "#89b4fa"
+        border.width: theme ? theme.waybarBorderWidth : 2
+        radius: theme ? theme.waybarRadius : 10
+        opacity: theme ? theme.quickshellPanelOpacity : 0.94
         clip: true
         
         ColumnLayout {
@@ -160,19 +162,23 @@ PanelWindow {
                 TextField {
                     id: searchInput
                     placeholderText: "Search image"
-                    color: Theme.primary
+                    color: theme.on_background
                     font.pixelSize: 14
+                    font.family: theme.fontFamily
                     padding:8
                     Layout.fillWidth: true
                     horizontalAlignment: TextInput.AlignHCenter
+                    placeholderTextColor: Qt.rgba(theme.on_surface_variant.r, theme.on_surface_variant.g, theme.on_surface_variant.b, 0.8)
+                    selectedTextColor: theme.background
+                    selectionColor: theme.primary
                     
                     // opacity: activeFocus || text.length > 0 ? 1.0 : 0.7
                     
                     background: Rectangle {
                         anchors.fill: parent
-                        color: Theme.background
-                        radius: 10
-                        border.color: Theme.primary
+                        color: theme.surface_container
+                        radius: theme.waybarRadius
+                        border.color: searchInput.activeFocus ? theme.primary : theme.outline
                         border.width: 1
                     }
                 }
@@ -189,10 +195,11 @@ PanelWindow {
                         padding: 8
                         
                         background: Rectangle { 
-                            color: Theme.background 
-                            border.color: Theme.primary 
+                            color: theme.waybarBackground 
+                            border.color: theme.waybarBorder 
                             border.width: 1 
-                            radius: 8 
+                            radius: theme.waybarRadius
+                            opacity: theme.quickshellPanelOpacity
                         }
                         
                         ML4WMenuItem { 
@@ -233,7 +240,7 @@ PanelWindow {
             Rectangle { 
                 Layout.fillWidth: true
                 implicitHeight: 1
-                color: Theme.primary
+                color: theme.primary
                 opacity: 0.3 
             }
 
@@ -278,11 +285,11 @@ PanelWindow {
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 8 
-                        color: Theme.secondary 
+                        color: theme.surface_container 
                         
-                        border.color: mouseArea.containsMouse ? Theme.primary : "transparent"
+                        border.color: mouseArea.containsMouse ? theme.primary : theme.outline_variant
                         border.width: 2
-                        radius: 10
+                        radius: theme.waybarRadius
                         clip: true
 
                         Rectangle {
@@ -345,7 +352,8 @@ PanelWindow {
                                 Text {
                                     anchors.centerIn: parent
                                     text: model.fileName
-                                    color: "white"
+                                    color: theme.on_background
+                                    font.family: theme.fontFamily
                                     font.pixelSize: 11
                                     elide: Text.ElideRight
                                     width: parent.width - 8
