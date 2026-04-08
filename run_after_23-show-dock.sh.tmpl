@@ -3,6 +3,7 @@ set -euo pipefail
 
 DOCK_DISABLED_FILE="$HOME/.config/ml4w/settings/dock-disabled"
 DOCK_LAUNCHER="$HOME/.config/nwg-dock-hyprland/launch.sh"
+WAYBAR_LAUNCHER="$HOME/.config/waybar/launch.sh"
 
 rm -f "$DOCK_DISABLED_FILE"
 
@@ -15,6 +16,10 @@ if [[ -n "${WAYLAND_DISPLAY:-}" && -x "$DOCK_LAUNCHER" ]]; then
     fi
     sleep 0.1
   done
+
+  if [[ -x "$WAYBAR_LAUNCHER" ]]; then
+    nohup "$WAYBAR_LAUNCHER" >/dev/null 2>&1 &
+  fi
 
   nohup "$DOCK_LAUNCHER" >/dev/null 2>&1 &
 fi
