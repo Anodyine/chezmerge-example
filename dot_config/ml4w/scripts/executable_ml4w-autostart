@@ -49,10 +49,6 @@ else
     echo ":: waypaper not found in PATH"
 fi
 
-# Run the tracked wallpaper follow-up script so startup behavior stays
-# managed by this repo rather than depending on a legacy Hypr helper.
-~/.config/ml4w/scripts/ml4w-wallpaper "$wallpaper" &
-
 # -----------------------------------------------------
 # Start Quickshell
 # -----------------------------------------------------
