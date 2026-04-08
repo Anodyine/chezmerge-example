@@ -9,8 +9,8 @@ QtObject {
     // Keep Quickshell panels aligned with the Waybar glass theme.
     readonly property color waybarBackground: surface
     readonly property color waybarBackgroundAlt: surface_dim
-    readonly property color waybarBorder: primary
-    readonly property color waybarBorderMuted: on_primary
+    readonly property color waybarBorder: "#d649ae"
+    readonly property color waybarBorderMuted: "#241523"
     readonly property color waybarForeground: on_surface
     readonly property real waybarBorderWidth: 1
     readonly property real waybarRadius: 12

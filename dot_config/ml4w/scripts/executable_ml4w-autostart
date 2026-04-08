@@ -49,11 +49,6 @@ else
     echo ":: waypaper not found in PATH"
 fi
 
-# Recent backend/package changes can prevent Waypaper CLI from invoking the
-# configured post_command reliably during autostart. Run the follow-up step
-# explicitly so Waybar, colors, and cache generation still complete.
-~/.config/hypr/scripts/wallpaper.sh "$wallpaper" &
-
 # -----------------------------------------------------
 # Start Quickshell
 # -----------------------------------------------------
