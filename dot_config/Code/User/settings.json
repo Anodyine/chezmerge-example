@@ -1,6 +1,6 @@
 {
   "update.mode": "none", 
-  "workbench.colorTheme": "Monokai Pro (Filter Octagon)",
+  "workbench.colorTheme": "Dracula Darcula",
   "vim.handleKeys": {
       "<C-c>": false,
       "<C-v>": false,
@@ -29,7 +29,7 @@
   "terminal.integrated.gpuAcceleration": "on",
   "terminal.external.linuxExec": "kitty",
   "terminal.explorerKind": "external",
-  "workbench.iconTheme": "Monokai Pro (Filter Octagon) Icons",
+  "workbench.iconTheme": "Dracula Darcula Icons",
   "python.analysis.typeCheckingMode": "standard",
   "editor.fontSize": 16,
   "files.associations": {
@@ -66,5 +66,46 @@
         "%DOC%"
       ]
     }
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "editor.background": "#1e1f28",
+
+    "sideBar.background": "#181922",
+    "activityBar.background": "#14151d",
+    "statusBar.background": "#14151d",
+    "titleBar.activeBackground": "#14151d",
+    "titleBar.inactiveBackground": "#101118",
+    "menubar.selectionBackground": "#2a1f2a",
+    "menubar.selectionForeground": "#f5e9f2",
+
+    "editorGroupHeader.tabsBackground": "#101118",
+    "editorGroupHeader.noTabsBackground": "#101118",
+
+    "tab.activeBackground": "#181922",
+    "tab.inactiveBackground": "#14151d",
+    "tab.unfocusedActiveBackground": "#181922",
+    "tab.unfocusedInactiveBackground": "#14151d",
+    "tab.activeForeground": "#f5e9f2",
+    "tab.inactiveForeground": "#9ea0aa",
+    "tab.border": "#14151d",
+
+    "panel.background": "#101118",
+    "panel.border": "#14151d",
+    "panelTitle.activeBorder": "#d649ae",
+    "panelTitle.activeForeground": "#f5e9f2",
+    "panelTitle.inactiveForeground": "#9ea0aa",
+
+    "terminal.background": "#101118",
+
+    "breadcrumb.background": "#181922",
+    "editorLineNumber.background": "#1e1f28",
+
+    "sideBarTitle.background": "#181922",
+    "sideBarSectionHeader.background": "#14151d",
+    "sideBarSectionHeader.border": "#14151d",
+
+    "list.inactiveSelectionBackground": "#2a1f2a",
+    "list.activeSelectionBackground": "#3a2340",
+    "list.hoverBackground": "#221a2a"
+  }
 }
