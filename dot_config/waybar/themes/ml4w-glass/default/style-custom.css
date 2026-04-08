@@ -7,11 +7,12 @@
     margin: 0 3px 0 0;
     box-shadow: 0 0 6 @shadow;
     min-width: 45px;
+    opacity: 0.97;
     background-color: @surface;
     background: radial-gradient(
             circle at 50% 250%,
-            alpha(#2c385e, 0.8),
-            alpha(@surface, 0.9)
+            alpha(#2c385e, 0.93),
+            alpha(@surface, 0.98)
         )
         padding-box,
         linear-gradient(@primary, @on_primary) border-box;
