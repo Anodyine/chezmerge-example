@@ -232,15 +232,20 @@ disown
 info "nwg-dock-hyprland reloaded"
 
 # Create blurred image
-magick "$IMAGE_PATH" -resize 75% "$BLURRED_WALLPAPER"
+BLURRED_TMP="$(mktemp "$CACHE_FOLDER/blurred_wallpaper.XXXXXX.png")"
+SQUARE_TMP="$(mktemp "$CACHE_FOLDER/square_wallpaper.XXXXXX.png")"
+
+magick "$IMAGE_PATH" -resize 75% "$BLURRED_TMP"
 info "$(basename "$IMAGE_PATH") resized to 75% -> $(basename "$BLURRED_WALLPAPER")"
 if [ ! "$BLUR" == "0x0" ]; then
-    magick "$BLURRED_WALLPAPER" -blur $BLUR "$BLURRED_WALLPAPER"
+    magick "$BLURRED_TMP" -blur $BLUR "$BLURRED_TMP"
     info "$(basename "$BLURRED_WALLPAPER") blurred with $BLUR"
 fi
+mv -f "$BLURRED_TMP" "$BLURRED_WALLPAPER"
 
 # Create square image
-magick "$IMAGE_PATH" -gravity Center -extent 1:1 "$SQUARE_WALLPAPER"
+magick "$IMAGE_PATH" -gravity Center -extent 1:1 "$SQUARE_TMP"
+mv -f "$SQUARE_TMP" "$SQUARE_WALLPAPER"
 info "$(basename "$SQUARE_WALLPAPER") created"
 
 # Create rasi file
