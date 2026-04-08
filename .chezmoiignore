@@ -15,3 +15,6 @@ fix-btrfs-layout.sh
 tools
 wallpapers
 .external_sources
+
+# Runtime-managed configs
+.config/waypaper/config.ini
