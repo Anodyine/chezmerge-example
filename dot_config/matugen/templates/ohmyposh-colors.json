@@ -10,10 +10,10 @@
       "color7": "",
       "color8": "",
       "color9": "",
-      "color10": "{{colors.primary.default.hex}}",
+      "color10": "#d649ae",
       "color11": "",
       "color12": "",
-      "color13": "{{colors.on_primary_fixed.default.hex}}",
+      "color13": "#241523",
       "color14": "",
       "color15": "{{colors.on_surface.default.hex}}"
     }

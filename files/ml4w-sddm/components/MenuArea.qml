@@ -502,8 +502,8 @@ Item {
                 var x = halfLine;
                 var y = halfLine;
                 var gradient = ctx.createLinearGradient(0, 0, 0, height);
-                gradient.addColorStop(0, "#dbab27");
-                gradient.addColorStop(1, "#382e1f");
+                gradient.addColorStop(0, "#d649ae");
+                gradient.addColorStop(1, "#241523");
                 ctx.beginPath();
                 ctx.moveTo(x + radius, y);
                 ctx.lineTo(x + w - radius, y);
@@ -584,8 +584,8 @@ Item {
                 var x = halfLine;
                 var y = halfLine;
                 var gradient = ctx.createLinearGradient(0, 0, 0, height);
-                gradient.addColorStop(0, "#dbab27");
-                gradient.addColorStop(1, "#382e1f");
+                gradient.addColorStop(0, "#d649ae");
+                gradient.addColorStop(1, "#241523");
                 ctx.beginPath();
                 ctx.moveTo(x + radius, y);
                 ctx.lineTo(x + w - radius, y);
@@ -666,8 +666,8 @@ Item {
                 var x = halfLine;
                 var y = halfLine;
                 var gradient = ctx.createLinearGradient(0, 0, 0, height);
-                gradient.addColorStop(0, "#dbab27");
-                gradient.addColorStop(1, "#382e1f");
+                gradient.addColorStop(0, "#d649ae");
+                gradient.addColorStop(1, "#241523");
                 ctx.beginPath();
                 ctx.moveTo(x + radius, y);
                 ctx.lineTo(x + w - radius, y);

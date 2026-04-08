@@ -4,11 +4,11 @@ import QtQuick
 QtObject {
     id: m3
 
-    property color m3primary: "{{colors.primary.default.hex}}"
-    property color m3onPrimary: "{{colors.on_primary.default.hex}}"
+    property color m3primary: "#d649ae"
+    property color m3onPrimary: "#241523"
 
-    property color m3primaryContainer: "{{colors.primary_container.default.hex}}"
-    property color m3onPrimaryContainer: "{{colors.on_primary_container.default.hex}}"
+    property color m3primaryContainer: "#d649ae"
+    property color m3onPrimaryContainer: "#241523"
 
     property color m3secondary: "{{colors.secondary.default.hex}}"
     property color m3onSecondary: "{{colors.on_secondary.default.hex}}"

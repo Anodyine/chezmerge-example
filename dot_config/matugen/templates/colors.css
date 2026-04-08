@@ -7,9 +7,18 @@
 <* for name, value in colors *>
     @define-color {{name}} {{value.default.hex}};
 <* endfor *>
-/* Keep user-selected primary stable across regenerations */
-@define-color primary #dbab27;
-@define-color on_primary #382e1f;
+/* Keep user-selected accent family stable across regenerations */
+@define-color inverse_primary #d649ae;
+@define-color primary #d649ae;
+@define-color on_primary #241523;
+@define-color primary_container #d649ae;
+@define-color on_primary_container #241523;
+@define-color primary_fixed #d649ae;
+@define-color primary_fixed_dim #d649ae;
+@define-color on_primary_fixed #241523;
+@define-color on_primary_fixed_variant #241523;
+@define-color source_color #d649ae;
+@define-color surface_tint #d649ae;
 /* Keep base UI background aligned with kitty */
 @define-color background #2e303d;
 @define-color surface #2e303d;
