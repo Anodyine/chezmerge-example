@@ -69,7 +69,7 @@
   ],
   "workbench.colorCustomizations": {
     "editor.background": "#1e1f28",
-
+    "welcomePage.background": "#1e1f28",
     "sideBar.background": "#181922",
     "activityBar.background": "#14151d",
     "statusBar.background": "#14151d",
