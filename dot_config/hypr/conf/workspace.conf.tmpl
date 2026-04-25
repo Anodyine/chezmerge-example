@@ -8,3 +8,6 @@ source = ~/.config/hypr/conf/workspaces/arch-surface.conf
 {{ if or (eq .chezmoi.hostname "ml-server") (eq .chezmoi.hostname "ml-server-1") -}}
 source = ~/.config/hypr/conf/workspaces/left_desk.conf
 {{ end }}
+{{ if eq .chezmoi.hostname "ml-server" -}}
+source = ~/.config/hypr/conf/workspaces/right_desk.conf
+{{ end }}
