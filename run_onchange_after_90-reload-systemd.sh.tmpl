@@ -1,8 +1,46 @@
 #!/bin/bash
 
 # hash: {{ include "dot_config/systemd/user/hyprland-session.target" | sha256sum }}
+# hash: {{ include "dot_config/systemd/user/sunshine.service.d/override.conf" | sha256sum }}
 # hash: {{ include "dot_config/systemd/user/app-dev.lizardbyte.app.Sunshine.service.d/override.conf" | sha256sum }}
+
+set -euo pipefail
+
+sunshine_units=(
+  app-dev.lizardbyte.app.Sunshine.service
+  sunshine.service
+)
+
+unit_exists() {
+  systemctl --user list-unit-files "$1" --no-legend 2>/dev/null | awk '{print $1}' | grep -Fxq "$1"
+}
+
+find_sunshine_unit() {
+  local unit
+
+  for unit in "${sunshine_units[@]}"; do
+    if unit_exists "$unit" && systemctl --user is-enabled --quiet "$unit"; then
+      printf '%s\n' "$unit"
+      return 0
+    fi
+  done
+
+  for unit in "${sunshine_units[@]}"; do
+    if unit_exists "$unit"; then
+      printf '%s\n' "$unit"
+      return 0
+    fi
+  done
+
+  return 1
+}
 
 echo "Systemd configuration changed. Reloading..."
 systemctl --user daemon-reload
-systemctl --user enable app-dev.lizardbyte.app.Sunshine.service
+
+if sunshine_unit="$(find_sunshine_unit)"; then
+  echo "Enabling Sunshine user service: $sunshine_unit"
+  systemctl --user enable "$sunshine_unit"
+else
+  echo "Warning: no Sunshine user service found; skipping enable." >&2
+fi
