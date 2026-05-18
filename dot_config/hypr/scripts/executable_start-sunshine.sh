@@ -11,5 +11,5 @@ done
 
 # Sunshine often exits on logout with a broken Wayland pipe. Clear any
 # start-limit state before retrying on the next login.
-systemctl --user reset-failed sunshine.service
-systemctl --user restart sunshine.service
+systemctl --user reset-failed app-dev.lizardbyte.app.Sunshine.service
+systemctl --user restart app-dev.lizardbyte.app.Sunshine.service
