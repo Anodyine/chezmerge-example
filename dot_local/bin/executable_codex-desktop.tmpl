@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+app_dir="{{ .chezmoi.homeDir }}/repos/codex-desktop-linux/codex-app"
+app="$app_dir/start.sh"
+
+if [ ! -x "$app" ]; then
+  printf 'Codex Desktop is not installed yet. Run: chezmoi apply\n' >&2
+  exit 127
+fi
+
+if [ "$#" -eq 0 ]; then
+  if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    if hyprctl -j clients 2>/dev/null | jq -e '.[] | select(.class == "codex-desktop" and .mapped == true and .hidden == false)' >/dev/null; then
+      hyprctl dispatch focuswindow 'class:^(codex-desktop)$' >/dev/null 2>&1 || true
+      exit 0
+    fi
+  fi
+
+  if pgrep -f "$app_dir/electron --no-sandbox --class=codex-desktop" >/dev/null 2>&1; then
+    pkill -TERM -f "$app_dir/electron" >/dev/null 2>&1 || true
+    pkill -TERM -f "$app_dir/start.sh" >/dev/null 2>&1 || true
+    pkill -TERM -f "$app_dir/.codex-linux/webview-server.py" >/dev/null 2>&1 || true
+    sleep 0.4
+  fi
+
+  exec "$app" --new-chat
+fi
+
+exec "$app" "$@"

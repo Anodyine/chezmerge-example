@@ -101,6 +101,9 @@ git
 curl
 wget
 unzip
+7zip
+base-devel
+python
 jq
 tree
 fzf

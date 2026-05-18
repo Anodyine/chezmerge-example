@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Codex
+Comment=OpenAI Codex Desktop
+Exec={{ .chezmoi.homeDir }}/.local/bin/codex-desktop %U
+TryExec={{ .chezmoi.homeDir }}/.local/bin/codex-desktop
+Terminal=false
+Type=Application
+Icon={{ .chezmoi.homeDir }}/repos/codex-desktop-linux/assets/codex.png
+StartupWMClass=codex-desktop
+Categories=Development;
+MimeType=x-scheme-handler/codex;
