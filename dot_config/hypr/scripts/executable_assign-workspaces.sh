@@ -11,6 +11,15 @@ get_monitor_by_desc() {
     ' | head -n1
 }
 
+get_monitor_by_name() {
+    monitor_name=$1
+    printf '%s\n' "$MONITORS_JSON" | jq -r --arg monitor_name "$monitor_name" '
+        .[]
+        | select(.name == $monitor_name)
+        | .name
+    ' | head -n1
+}
+
 apply_workspace_rule() {
     workspace_id=$1
     monitor_name=$2
@@ -33,6 +42,32 @@ done
 
 if [ -z "${MONITORS_JSON:-}" ]; then
     exit 0
+fi
+
+monitor_count=$(printf '%s\n' "$MONITORS_JSON" | jq 'length')
+machine_name=$(uname -n)
+
+# Keep the Surface's built-in panel on odd workspaces when the iPad display
+# is the only external monitor attached. All other monitor combinations fall
+# back to the existing description-based mapping below.
+if [ "$machine_name" = "arch-surface" ] && [ "$monitor_count" -eq 2 ]; then
+    builtin_monitor=$(get_monitor_by_name 'eDP-1')
+    ipad_monitor=$(get_monitor_by_desc 'LG Display')
+
+    if [ -n "$builtin_monitor" ] && [ -n "$ipad_monitor" ]; then
+        apply_workspace_rule 1 "$builtin_monitor" true
+        apply_workspace_rule 3 "$builtin_monitor" false
+        apply_workspace_rule 5 "$builtin_monitor" false
+        apply_workspace_rule 7 "$builtin_monitor" false
+        apply_workspace_rule 9 "$builtin_monitor" false
+
+        apply_workspace_rule 2 "$ipad_monitor" true
+        apply_workspace_rule 4 "$ipad_monitor" false
+        apply_workspace_rule 6 "$ipad_monitor" false
+        apply_workspace_rule 8 "$ipad_monitor" false
+        apply_workspace_rule 10 "$ipad_monitor" false
+        exit 0
+    fi
 fi
 
 even_monitor=$(get_monitor_by_desc 'GN10|Odyssey G95C|YMK EM160')
