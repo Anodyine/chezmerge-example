@@ -322,6 +322,9 @@ main() {
   {{ if eq .chezmoi.hostname "arch-surface" -}}
     sudo pacman -S --needed --noconfirm intel-media-driver libva-utils
   {{ end -}}
+  {{ if eq .chezmoi.hostname "ml-server" -}}
+    sudo pacman -S --needed --noconfirm docker-compose
+  {{ end -}}
   # Install informant last so its hook doesn’t block anything else
   # If you run this, you will need to read the latest news before
   # updating or installing packages. That way, you won't miss required manual
