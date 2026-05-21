@@ -138,7 +138,6 @@ visual-studio-code-bin
 nodejs                  # Frontend dev server/runtime for Vite, Lit, and Tauri
 corepack                # Pins and dispatches the project package manager
 pnpm                    # Package manager used by the frontend slice
-chromedriver            # WebDriver browser automation for frontend UI tests
 rustup                  # Rust toolchain manager for Tauri development
 webkit2gtk-4.1          # Tauri v2 Linux webview dependency
 openssl                 # Tauri v2 Linux dependency
