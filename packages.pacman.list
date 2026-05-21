@@ -135,6 +135,17 @@ distrobox
 uv
 qutebrowser
 visual-studio-code-bin
+nodejs                  # Frontend dev server/runtime for Vite, Lit, and Tauri
+corepack                # Pins and dispatches the project package manager
+pnpm                    # Package manager used by the frontend slice
+chromedriver            # WebDriver browser automation for frontend UI tests
+rustup                  # Rust toolchain manager for Tauri development
+webkit2gtk-4.1          # Tauri v2 Linux webview dependency
+openssl                 # Tauri v2 Linux dependency
+appmenu-gtk-module      # Tauri v2 Linux dependency
+libappindicator         # Provides libappindicator-gtk3 for Tauri tray/appindicator support
+librsvg                 # Tauri v2 Linux icon/rendering dependency
+xdotool                 # Tauri v2 Linux xdo dependency
 
 # --- Applications ---
 obsidian
