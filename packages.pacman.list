@@ -135,6 +135,7 @@ distrobox
 uv
 qutebrowser
 visual-studio-code-bin
+nvm                     # Node version manager from Arch extra
 nodejs                  # Frontend dev server/runtime for Vite, Lit, and Tauri
 corepack                # Pins and dispatches the project package manager
 pnpm                    # Package manager used by the frontend slice
