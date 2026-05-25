@@ -75,6 +75,8 @@ adw-gtk-theme
 pipewire
 pipewire-alsa
 pipewire-pulse
+pipewire-jack
+gst-plugin-pipewire
 wireplumber
 pavucontrol
 playerctl
