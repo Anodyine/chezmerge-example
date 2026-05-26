@@ -143,6 +143,7 @@ corepack                # Pins and dispatches the project package manager
 pnpm                    # Package manager used by the frontend slice
 rustup                  # Rust toolchain manager for Tauri development
 webkit2gtk-4.1          # Tauri v2 Linux webview dependency
+webkitgtk-6.0           # Provides WebKitWebDriver for Tauri WebDriver tests
 openssl                 # Tauri v2 Linux dependency
 appmenu-gtk-module      # Tauri v2 Linux dependency
 libappindicator         # Provides libappindicator-gtk3 for Tauri tray/appindicator support
