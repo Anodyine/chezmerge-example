@@ -192,6 +192,43 @@ install_flatpak_apps() {
   fi
 }
 
+ensure_docker_runtime() {
+  if ! command -v docker >/dev/null 2>&1; then
+    warn "Docker CLI is not installed; skipping Docker service setup."
+    return 0
+  fi
+
+  if ! docker compose version >/dev/null 2>&1; then
+    warn "Docker Compose plugin is not available. Ensure docker-compose installed cleanly."
+  fi
+
+  need_cmd systemctl
+
+  if sudo systemctl enable --now docker.service >/dev/null 2>&1; then
+    info "Enabled and started docker.service"
+  else
+    warn "Could not enable docker.service."
+    warn "Check logs with: sudo journalctl -u docker"
+  fi
+
+  local login_user="${SUDO_USER:-${USER:-}}"
+  if [ -z "$login_user" ]; then
+    login_user="$(id -un)"
+  fi
+
+  if getent group docker >/dev/null 2>&1; then
+    if ! id -nG "$login_user" 2>/dev/null | tr ' ' '\n' | grep -qx docker; then
+      info "Adding ${login_user} to the docker group."
+      sudo usermod -aG docker "$login_user"
+      warn "Log out and back in for non-sudo docker commands in new shells."
+    else
+      info "${login_user} is already in the docker group."
+    fi
+  else
+    warn "docker group was not found after installing Docker."
+  fi
+}
+
 enable_sshd_service() {
   need_cmd systemctl
 
@@ -313,6 +350,7 @@ main() {
   install_pacman_pkgs
   install_yay_pkgs
   install_flatpak_apps
+  ensure_docker_runtime
   install_oh_my_zsh
   install_plugins
   make_default_shell

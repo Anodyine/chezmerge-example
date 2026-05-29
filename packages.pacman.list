@@ -104,6 +104,7 @@ curl
 wget
 unzip
 7zip
+openssl
 base-devel
 python
 jq
@@ -132,6 +133,9 @@ limine                  # Explicit so chezmoi package sync upgrades the bootload
 plymouth                # Boot splash for Limine + mkinitcpio systems
 
 # --- Virtualization & Dev ---
+docker
+docker-compose
+docker-buildx
 podman
 distrobox
 uv

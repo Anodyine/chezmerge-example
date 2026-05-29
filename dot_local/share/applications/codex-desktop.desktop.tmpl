@@ -1,8 +1,12 @@
 [Desktop Entry]
 Name=Codex
 Comment=OpenAI Codex Desktop
-Exec={{ .chezmoi.homeDir }}/.local/bin/codex-desktop %U
-TryExec={{ .chezmoi.homeDir }}/.local/bin/codex-desktop
+{{- $codexDesktopBin := "codex-desktop" -}}
+{{- if eq .chezmoi.hostname "arch-lenovo" -}}
+{{- $codexDesktopBin = "codex-desktop-dagu" -}}
+{{- end }}
+Exec={{ .chezmoi.homeDir }}/.local/bin/{{ $codexDesktopBin }} %U
+TryExec={{ .chezmoi.homeDir }}/.local/bin/{{ $codexDesktopBin }}
 Terminal=false
 Type=Application
 Icon={{ .chezmoi.homeDir }}/repos/codex-desktop-linux/assets/codex.png
