@@ -1,0 +1,5 @@
+Failed find package `aider-chat` in tool environment
+Failed find package `open-webui` in tool environment
+Failed find package `vllm` in tool environment
+chezmerge v0.1.0
+- chezmerge

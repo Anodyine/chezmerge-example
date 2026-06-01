@@ -1,0 +1,4 @@
+com.github.tchx84.Flatseal
+com.ml4w.calendar
+com.ml4w.hyprlandsettings
+org.localsend.localsend_app

@@ -1,0 +1,6 @@
+abootimg
+openai-codex-bin
+python-pywalfox
+ttf-material-design-icons-git
+via-bin
+yay-bin

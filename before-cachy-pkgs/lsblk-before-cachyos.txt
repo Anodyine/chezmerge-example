@@ -1,0 +1,15 @@
+NAME        FSTYPE  FSVER            LABEL       UUID                                 FSAVAIL FSUSE% MOUNTPOINTS
+sda         iso9660 Joliet Extension COS_202604  2026-04-26-09-32-03-00                              
+├─sda1      iso9660 Joliet Extension COS_202604  2026-04-26-09-32-03-00                              
+└─sda2      vfat    FAT16            ARCHISO_EFI 69ED-DB93                                           
+zram0       swap    1                zram0       fae15a61-82d0-4176-b215-b581a5b7ff2d                [SWAP]
+nvme0n1                                                                                              
+├─nvme0n1p1 vfat    FAT32                        9CD3-765B                              19.7G     2% /boot
+├─nvme0n1p2 btrfs                                b3d28cf0-3d27-4e9a-a3fb-e83e933fbdd0    1.7T    14% /home
+│                                                                                                    /var/log
+│                                                                                                    /var/cache/pacman/pkg
+│                                                                                                    /.snapshots
+│                                                                                                    /
+├─nvme0n1p3                                                                                          
+├─nvme0n1p4 ntfs                                 D46A6BB86A6B95D0                                    
+└─nvme0n1p5 ntfs                                 E4E401BDE401934A                                    

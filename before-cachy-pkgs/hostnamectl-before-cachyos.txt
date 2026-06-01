@@ -1,0 +1,15 @@
+ Static hostname: arch-surface
+       Icon name: computer-laptop
+         Chassis: laptop 💻
+      Machine ID: fab35a60a6cc4765a2c0c53d104255a3
+         Boot ID: aa771308551e41acb63434e1f6d65c1b
+Operating System: Arch Linux
+          Kernel: Linux 6.19.8-arch1-3-surface
+    Architecture: x86-64
+ Hardware Vendor: Microsoft Corporation
+  Hardware Model: Surface Laptop Studio 2
+    Hardware SKU: Surface_Laptop_Studio_2_2029
+Hardware Version: 124I:00088T:000M:0000000D:0B:11F:4C:02P:01Y:0U:11
+Firmware Version: 23.101.143
+   Firmware Date: Thu 2025-11-27
+    Firmware Age: 6month 4d

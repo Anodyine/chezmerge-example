@@ -1,0 +1,11 @@
+abootimg
+abootimg-debug
+electron40-bin-debug
+openai-codex-bin
+openai-codex-bin-debug
+python-pywalfox
+ttf-material-design-icons-git
+via-bin
+via-bin-debug
+yay-bin
+yay-bin-debug

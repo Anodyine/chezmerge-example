@@ -1,0 +1,7 @@
+TARGET                  SOURCE                      FSTYPE OPTIONS
+/                       /dev/nvme0n1p2[/@]          btrfs  rw,relatime,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@
+├─/.snapshots           /dev/nvme0n1p2[/@snapshots] btrfs  rw,relatime,ssd,discard=async,space_cache=v2,subvolid=260,subvol=/@snapshots
+├─/var/log              /dev/nvme0n1p2[/@log]       btrfs  rw,relatime,ssd,discard=async,space_cache=v2,subvolid=258,subvol=/@log
+├─/var/cache/pacman/pkg /dev/nvme0n1p2[/@pkg]       btrfs  rw,relatime,ssd,discard=async,space_cache=v2,subvolid=259,subvol=/@pkg
+├─/home                 /dev/nvme0n1p2[/@home]      btrfs  rw,relatime,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/@home
+└─/boot                 /dev/nvme0n1p1              vfat   rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro
