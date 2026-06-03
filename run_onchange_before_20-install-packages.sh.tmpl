@@ -121,9 +121,9 @@ REPO
   fi
 }
 
-refresh_pacman() {
-  info "Refreshing pacman databases"
-  sudo pacman -Syy
+sync_pacman() {
+  info "Synchronizing pacman databases and upgrading installed packages"
+  sudo pacman -Syu --noconfirm
 }
 
 ensure_flatpak_flathub() {
@@ -345,7 +345,7 @@ main() {
   enable_multilib
   add_lizardbyte_repo
   setup_chaotic_aur
-  refresh_pacman
+  sync_pacman
   ensure_flatpak_flathub
   install_pacman_pkgs
   install_yay_pkgs
